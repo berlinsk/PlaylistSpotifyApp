@@ -1,4 +1,4 @@
-const CLIENT_ID = "0464648f805d467eb5fdee809c88561c";
+const CLIENT_ID = "046448f805d547e7b5fdee809c88561c";
 const REDIRECT_URI = "https://berlinsk.github.io/PlaylistSpotifyApp/";
 
 const SCOPES = [
