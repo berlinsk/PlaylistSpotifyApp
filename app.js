@@ -352,6 +352,13 @@ function parseReleaseDate(d, precision) {
   return Date.parse(d);
 }
 
+async function fetchTopTracks(artistId) {
+  const url = new URL(`https://api.spotify.com/v1/artists/${artistId}/top-tracks`);
+  url.searchParams.set("market", "from_token");
+  const j = await api(url.toString());
+  return j.tracks || [];
+}
+
 async function buildAllTrackUris(artists, opts) {
   const seen = new Set();
   const result = [];
@@ -360,6 +367,23 @@ async function buildAllTrackUris(artists, opts) {
     const a = artists[idx];
     log(`(${idx+1}/${artists.length}) ${a.name} — reading releases…`);
     const albums = await fetchAllAlbums(a.id, opts.singlesOnly);
+
+    if (!albums.length) {
+      log(`no albums found for ${a.name}, fetching top tracks…`);
+      const tracks = await fetchTopTracks(a.id);
+      for (const t of tracks) {
+        if (seen.has(t.id)) continue;
+        seen.add(t.id);
+        result.push({
+          id: t.id,
+          uri: t.uri,
+          albumId: null,
+          trackNumber: 0,
+          albumDate: Date.now()
+        });
+      }
+      continue;
+    }
 
     const albumsNormalized = albums.map(x => ({
       id: x.id,
