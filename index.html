@@ -28,7 +28,10 @@
       <button id="logout" class="btn btn-secondary" style="display:none" data-i18n="logout">Log out</button>
     </div>
 
-    <div id="whoami" class="mb-2" style="display:none"></div>
+    <div id="whoami" class="mb-3 d-flex align-items-center gap-2" style="display:none">
+        <img id="whoamiAvatar" src="" alt="" class="rounded-circle flex-shrink-0" style="width:40px;height:40px;object-fit:cover;display:none">
+        <div id="whoamiText"></div>
+    </div>
 
     <div id="controls" style="display:none">
       <div class="row g-2 mb-3">
@@ -59,11 +62,16 @@
     </div>
 
     <div id="artistSelector" class="mb-3" style="display:none">
-    <label class="form-check mb-2">
-        <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
-        <span data-i18n="selectAll">Select all artists</span>
-    </label>
-    <div id="artistList" class="border rounded p-2" style="max-height:200px; overflow:auto"></div>
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+            <label class="form-check m-0">
+                <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
+                <span data-i18n="selectAll">Select all artists</span>
+            </label>
+            <input id="artistSearch" type="search" class="form-control form-control-sm ms-auto" style="max-width:280px"
+                placeholder="" data-i18n-placeholder="searchArtists">
+            <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+        </div>
+        <div id="artistList" class="artist-list border rounded p-2"></div>
     </div>
 
     <h3 class="h5 mt-4" data-i18n="logTitle">Log</h3>

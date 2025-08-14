@@ -58,6 +58,61 @@ body {
   box-shadow: 0 0 5px rgba(29,185,84,.6);
 }
 
+#whoamiAvatar {
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.artist-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .5rem .75rem;
+  max-height: 260px;
+  overflow: auto;
+  background: rgba(255,255,255,.35);
+  backdrop-filter: blur(4px);
+}
+
+@media (min-width: 768px) {
+  .artist-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 992px) {
+  .artist-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.artist-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .25rem .35rem;
+  border-radius: .5rem;
+  transition: background-color .15s ease;
+}
+
+.artist-item:hover {
+  background: rgba(0,0,0,.05);
+}
+
+.artist-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #eee;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+.artist-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: .95rem;
+}
+
 @media (max-width: 720px) {
   :root {
     --bg-overlay: 0.75;
