@@ -1,3 +1,95 @@
+const I18N = {
+  en: {
+    title: "Followed Artists Playlist",
+    intro: "Collect all tracks from artists you follow and create a playlist in your account",
+    login: "Log in to Spotify",
+    logout: "Log out",
+    public: "Make playlist public",
+    chronological: "Add in chronological order",
+    singles: "Singles only",
+    build: "Build and create playlist",
+    logTitle: "Log",
+    scopes: "Requires scopes: ",
+    placeholder: "followed artists: all tracks",
+    loggedInAs: "logged in as:",
+    ready: "ready — click 'build and create playlist'"
+  },
+  ru: {
+    title: "Плейлист из подписанных артистов",
+    intro: "Соберите все треки только от артистов, на которых вы подписаны, и создайте плейлист",
+    login: "Войти в Spotify",
+    logout: "Выйти",
+    public: "Сделать плейлист публичным",
+    chronological: "Добавлять в хронологическом порядке",
+    singles: "Только синглы",
+    build: "Собрать и создать плейлист",
+    logTitle: "Лог",
+    scopes: "Требуются разрешения: ",
+    placeholder: "подписанные артисты: все треки",
+    loggedInAs: "вы вошли как:",
+    ready: "готово — жмите 'собрать и создать плейлист'"
+  },
+  uk: {
+    title: "Плейлист із підписаних артистів",
+    intro: "Зберіть усі треки лише від артистів, на яких ви підписані, і створіть плейлист",
+    login: "Увійти в Spotify",
+    logout: "Вийти",
+    public: "Зробити плейлист публічним",
+    chronological: "Додавати в хронологічному порядку",
+    singles: "Лише сингли",
+    build: "Зібрати та створити плейлист",
+    logTitle: "Лог",
+    scopes: "Потрібні дозволи: ",
+    placeholder: "підписані артисти: всі треки",
+    loggedInAs: "увійшли як:",
+    ready: "готово — натисніть 'зібрати та створити плейлист'"
+  },
+  emoji: {
+    title: "🐈🎧📜",
+    intro: "🐈🧲🎵 -> 📝📻",
+    login: "🐈🔑",
+    logout: "🚪👈🏻🐈",
+    public: "🐈🌐🐈‍⬛",
+    chronological: "🗓️",
+    singles: "🐈🎯",
+    build: "🐈⚙️✅",
+    logTitle: "🐱📒",
+    scopes: "🐈🔐: ",
+    placeholder: "🐈🎵:",
+    loggedInAs: "🐈(YOU)",
+    ready: "ok — tap on 🐈⚙️✅"
+  }
+};
+
+function applyI18n(lang) {
+  const dict = I18N[lang] || I18N.en;
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const k = el.getAttribute("data-i18n");
+    if (dict[k]) el.textContent = dict[k];
+  });
+  const inp = document.getElementById("playlistName");
+  if (inp && (!inp.value || inp.value === inp.getAttribute("data-prev"))) {
+    inp.value = dict.placeholder;
+  }
+  if (inp) {
+    inp.placeholder = dict.placeholder;
+    inp.setAttribute("data-prev", dict.placeholder);
+  }
+  document.documentElement.setAttribute("lang", lang);
+  const sel = document.getElementById("lang");
+  if (sel && sel.value !== lang) sel.value = lang;
+  localStorage.setItem("lang", lang);
+}
+
+function getPreferredLang() {
+  const saved = localStorage.getItem("lang");
+  if (saved && I18N[saved]) return saved;
+  const nav = (navigator.language || "en").toLowerCase();
+  if (nav.startsWith("ru")) return "ru";
+  if (nav.startsWith("uk") || nav.startsWith("ua")) return "uk";
+  return "en";
+}
+
 const CLIENT_ID = "046448f805d547e7b5fdee809c88561c";
 const REDIRECT_URI = "https://berlinsk.github.io/PlaylistSpotifyApp/";
 
@@ -93,10 +185,12 @@ async function api(url, opts={}) {
 }
 
 async function beginLogin() {
+  const sel = document.getElementById("lang");
+  const currentLang = (sel && sel.value) || getPreferredLang();
+  localStorage.setItem("lang", currentLang);
   const codeVerifier = randomString(64);
   const codeChallenge = base64urlencode(await sha256(codeVerifier));
   sessionStorage.setItem("pkce_verifier", codeVerifier);
-
   const params = new URLSearchParams({
     response_type: "code",
     client_id: CLIENT_ID,
@@ -317,17 +411,28 @@ logoutBtn.onclick = doLogout;
 runBtn.onclick = runFlow;
 
 (async function init() {
+  const initialLang = localStorage.getItem("lang") || getPreferredLang();
+  applyI18n(initialLang);
+  const langSel = document.getElementById("lang");
+  if (langSel) {
+    langSel.value = initialLang;
+    langSel.onchange = e => applyI18n(e.target.value);
+  }
   log(`redirect uri: ${REDIRECT_URI}`);
   await handleRedirect();
   const token = await getAccessToken();
+  const currentLang = localStorage.getItem("lang") || initialLang;
+  applyI18n(currentLang);
+  if (langSel) langSel.value = currentLang;
   if (token) {
     loginBtn.style.display = "none";
     logoutBtn.style.display = "";
     const me = await fetchMe();
+    const dict = I18N[currentLang] || I18N.en;
     whoamiEl.style.display = "";
-    whoamiEl.innerHTML = `<p><b>logged in as:</b> ${me.display_name || me.id}</p>`;
+    whoamiEl.innerHTML = `<p><b>${dict.loggedInAs}</b> ${me.display_name || me.id}</p>`;
     controlsEl.style.display = "";
-    log("ready — click 'build and create playlist'");
+    log(dict.ready);
   } else {
     whoamiEl.style.display = "none";
     controlsEl.style.display = "none";
