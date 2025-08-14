@@ -501,6 +501,16 @@ loginBtn.onclick = beginLogin;
 logoutBtn.onclick = doLogout;
 runBtn.onclick = runFlow;
 
+const artistOkBtn = document.getElementById('artistOk');
+const artistModalEl = document.getElementById('artistModal');
+if (artistOkBtn && artistModalEl) {
+  artistOkBtn.addEventListener('click', () => {
+    const modal = bootstrap.Modal.getOrCreateInstance(artistModalEl);
+    modal.hide();
+    setTimeout(() => runFlow(), 100);
+  });
+}
+
 (async function init() {
   const initialLang = localStorage.getItem("lang") || getPreferredLang();
   applyI18n(initialLang);
