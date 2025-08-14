@@ -12,7 +12,8 @@ const I18N = {
     scopes: "Requires scopes: ",
     placeholder: "followed artists: all tracks",
     loggedInAs: "logged in as:",
-    ready: "ready — click 'build and create playlist'"
+    ready: "ready — click 'build and create playlist'",
+    selectAll: "Select all artists"
   },
   ru: {
     title: "Плейлист из подписанных артистов",
@@ -27,7 +28,8 @@ const I18N = {
     scopes: "Требуются разрешения: ",
     placeholder: "подписанные артисты: все треки",
     loggedInAs: "вы вошли как:",
-    ready: "готово — жмите 'собрать и создать плейлист'"
+    ready: "готово — жмите 'собрать и создать плейлист'",
+    selectAll: "Выбрать всех артистов"
   },
   uk: {
     title: "Плейлист із підписаних артистів",
@@ -42,7 +44,8 @@ const I18N = {
     scopes: "Потрібні дозволи: ",
     placeholder: "підписані артисти: всі треки",
     loggedInAs: "увійшли як:",
-    ready: "готово — натисніть 'зібрати та створити плейлист'"
+    ready: "готово — натисніть 'зібрати та створити плейлист'",
+    selectAll: "Вибрати всіх артистів"
   },
   emoji: {
     title: "🐈🎧📜",
@@ -57,7 +60,8 @@ const I18N = {
     scopes: "🐈🔐: ",
     placeholder: "🐈🎵:",
     loggedInAs: "🐈(YOU)",
-    ready: "ok — tap on 🐈⚙️✅"
+    ready: "ok — tap on 🐈⚙️✅",
+    selectAll: "🐈✅🎤"
   }
 };
 
@@ -382,8 +386,12 @@ async function runFlow() {
     const me = await fetchMe();
     log(`logged in as: ${me.display_name || me.id} (${me.country})`);
 
-    const artists = await fetchAllFollowedArtists();
-    if (!artists.length) { log("no followed artists found"); return; }
+    const selectedIds = Array.from(document.querySelectorAll(".artist-checkbox"))
+    .filter(cb => cb.checked)
+    .map(cb => cb.value);
+
+    const artists = (window._allArtists || []).filter(a => selectedIds.includes(a.id));
+    if (!artists.length) { log("no selected artists found"); return; }
 
     const uris = await buildAllTrackUris(artists, {
       chronological: chronological.checked,
@@ -433,6 +441,26 @@ runBtn.onclick = runFlow;
     whoamiEl.innerHTML = `<p><b>${dict.loggedInAs}</b> ${me.display_name || me.id}</p>`;
     controlsEl.style.display = "";
     log(dict.ready);
+
+    const artists = await fetchAllFollowedArtists();
+    if (artists.length) {
+    const artistSel = document.getElementById("artistSelector");
+    const artistList = document.getElementById("artistList");
+    artistSel.style.display = "";
+
+    artistList.innerHTML = artists.map(a => `
+        <label class="form-check">
+        <input type="checkbox" class="form-check-input artist-checkbox" value="${a.id}" checked>
+        ${a.name}
+        </label>
+    `).join("");
+
+    document.getElementById("selectAllArtists").onchange = e => {
+        document.querySelectorAll(".artist-checkbox").forEach(cb => cb.checked = e.target.checked);
+    };
+
+    window._allArtists = artists;
+    }
   } else {
     whoamiEl.style.display = "none";
     controlsEl.style.display = "none";
