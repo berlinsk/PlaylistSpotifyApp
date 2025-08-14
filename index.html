@@ -1,26 +1,51 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>GitHub Pages Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <title>Followed Artists → Playlist (UI test)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 40px;
-    }
-    h1 {
-      color: #1DB954;
-    }
-    p {
-      font-size: 18px;
-    }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 40px auto; max-width: 820px; line-height: 1.5; }
+    h1 { margin-top: 0 }
+    button { padding: 10px 16px; border: 0; border-radius: 8px; cursor: pointer; font-size: 16px; }
+    .primary { background: #1DB954; color: #fff; }
+    .muted { background: #eee; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
+    .log { white-space: pre-wrap; background: #0f172a; color: #e2e8f0; padding: 12px; border-radius: 8px; max-height: 320px; overflow: auto; }
+    label { display: inline-flex; align-items: center; gap: 8px; }
+    input[type="checkbox"] { transform: scale(1.2); }
+    a { color: #1DB954; }
+    footer { margin-top: 24px; font-size: 13px; color: #666; }
   </style>
 </head>
 <body>
-  <h1>It works!</h1>
-  <p>If you see this text, GitHub Pages is correctly serving HTML.</p>
+  <h1>Followed Artists.Playlist</h1>
+  <p>collect all tracks only from artists you follow and create a playlist in your account</p>
+
+  <div class="row">
+    <button id="login" class="primary">log in to spotify</button>
+    <button id="logout" class="muted" style="display:none">log out</button>
+  </div>
+
+  <div id="whoami" style="display:none"></div>
+
+  <div id="controls" style="display:none">
+    <div class="row">
+      <label><input type="checkbox" id="publicPl" /> make playlist public</label>
+      <label><input type="checkbox" id="chronological" checked /> add in chronological order</label>
+      <label><input type="checkbox" id="singlesOnly" /> singles only</label>
+    </div>
+    <div class="row">
+      <input id="playlistName" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:8px" value="followed artists: all tracks" />
+      <button id="run" class="primary">build and create playlist</button>
+    </div>
+  </div>
+
+  <h3>log</h3>
+  <div class="log" id="log"></div>
+
+  <footer>
+    requires scopes: <code>user-follow-read</code>, <code>playlist-modify-private</code> or public — works via oauth pkce directly in browser
+  </footer>
 </body>
 </html>
