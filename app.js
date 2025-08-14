@@ -73,6 +73,15 @@ const I18N = {
   }
 };
 
+const placeholderAvatar = (() => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+    <rect width="100%" height="100%" fill="#ddd"/>
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+      font-size="12" fill="#999">♪</text>
+  </svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+})();
+
 function applyI18n(lang) {
   const dict = I18N[lang] || I18N.en;
 
@@ -125,8 +134,17 @@ function createSafeImg(src, alt = '', className = '') {
   const img = document.createElement('img');
   img.className = className;
   img.alt = alt;
-  img.src = src || placeholderAvatar;
-  img.onerror = () => { img.onerror = null; img.src = placeholderAvatar; };
+  const ph = (typeof placeholderAvatar !== 'undefined' && placeholderAvatar) ? placeholderAvatar : (
+    'data:image/svg+xml;utf8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+         <rect width="100%" height="100%" fill="#ddd"/>
+         <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+           font-size="12" fill="#999">♪</text>
+       </svg>`
+    )
+  );
+  img.src = src || ph;
+  img.onerror = () => { img.onerror = null; img.src = ph; };
   return img;
 }
 
@@ -480,15 +498,11 @@ runBtn.onclick = runFlow;
     const avatar = (me.images && me.images[0] && me.images[0].url) ? me.images[0].url : "";
     const whoamiImg = document.getElementById("whoamiAvatar");
     const whoamiText = document.getElementById("whoamiText");
-    if (avatar) {
-        const safe = createSafeImg(avatar, '', whoamiImg.className);
-        safe.id = 'whoamiAvatar';
-        safe.style.cssText = whoamiImg.style.cssText;
-        whoamiImg.replaceWith(safe);
-        safe.style.display = '';
-    } else {
-        whoamiImg.style.display = 'none';
-    }
+    const safe = createSafeImg(avatar, '', whoamiImg.className);
+    safe.id = 'whoamiAvatar';
+    safe.style.cssText = whoamiImg.style.cssText;
+    whoamiImg.replaceWith(safe);
+    safe.style.display = '';
     whoamiText.innerHTML = `<b>${dict.loggedInAs}</b> ${me.display_name || me.id}`;
     controlsEl.style.display = "";
     log(dict.ready);
@@ -498,15 +512,6 @@ runBtn.onclick = runFlow;
         const artistSel = document.getElementById("artistSelector");
         const artistList = document.getElementById("artistList");
         artistSel.style.display = "";
-
-        const placeholderAvatar = (() => {
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
-                <rect width="100%" height="100%" fill="#ddd"/>
-                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
-                    font-size="12" fill="#999">♪</text>
-            </svg>`;
-            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-        })();
 
         function renderArtistList(list) {
             artistList.innerHTML = '';
