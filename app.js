@@ -121,6 +121,15 @@ function getPreferredLang() {
   return "en";
 }
 
+function createSafeImg(src, alt = '', className = '') {
+  const img = document.createElement('img');
+  img.className = className;
+  img.alt = alt;
+  img.src = src || placeholderAvatar;
+  img.onerror = () => { img.onerror = null; img.src = placeholderAvatar; };
+  return img;
+}
+
 const CLIENT_ID = "046448f805d547e7b5fdee809c88561c";
 const REDIRECT_URI = "https://berlinsk.github.io/PlaylistSpotifyApp/";
 
@@ -472,10 +481,13 @@ runBtn.onclick = runFlow;
     const whoamiImg = document.getElementById("whoamiAvatar");
     const whoamiText = document.getElementById("whoamiText");
     if (avatar) {
-        whoamiImg.src = avatar;
-        whoamiImg.style.display = "";
+        const safe = createSafeImg(avatar, '', whoamiImg.className);
+        safe.id = 'whoamiAvatar';
+        safe.style.cssText = whoamiImg.style.cssText;
+        whoamiImg.replaceWith(safe);
+        safe.style.display = '';
     } else {
-        whoamiImg.style.display = "none";
+        whoamiImg.style.display = 'none';
     }
     whoamiText.innerHTML = `<b>${dict.loggedInAs}</b> ${me.display_name || me.id}`;
     controlsEl.style.display = "";
@@ -487,21 +499,42 @@ runBtn.onclick = runFlow;
         const artistList = document.getElementById("artistList");
         artistSel.style.display = "";
 
-        const placeholderAvatar = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="100%" height="100%" fill="%23ddd"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="12" fill="%23999">♪</text></svg>';
-
-        function artistToHTML(a) {
-        const img = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : placeholderAvatar;
-        return `
-            <label class="artist-item">
-            <input type="checkbox" class="form-check-input artist-checkbox" value="${a.id}" checked>
-            <img class="artist-avatar" src="${img}" alt="">
-            <span class="artist-name" title="${a.name}">${a.name}</span>
-            </label>
-        `;
-        }
+        const placeholderAvatar = (() => {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+                <rect width="100%" height="100%" fill="#ddd"/>
+                <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    font-size="12" fill="#999">♪</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        })();
 
         function renderArtistList(list) {
-            artistList.innerHTML = list.map(artistToHTML).join("");
+            artistList.innerHTML = '';
+            const frag = document.createDocumentFragment();
+
+            list.forEach(a => {
+                const label = document.createElement('label');
+                label.className = 'artist-item';
+
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.className = 'form-check-input artist-checkbox';
+                cb.value = a.id;
+                cb.checked = true;
+
+                const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
+                const img = createSafeImg(imgUrl, '', 'artist-avatar');
+
+                const name = document.createElement('span');
+                name.className = 'artist-name';
+                name.textContent = a.name || '';
+                name.title = a.name || '';
+
+                label.append(cb, img, name);
+                frag.appendChild(label);
+            });
+
+            artistList.appendChild(frag);
             bindArtistCheckboxHandlers();
             updateSelectedCount();
         }
