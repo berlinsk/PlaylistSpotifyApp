@@ -14,6 +14,7 @@ const I18N = {
     loggedInAs: "logged in as:",
     ready: "ready — click 'build and create playlist'",
     selectAll: "Select all artists",
+    selectArtists: "Select artists",
     searchArtists: "Search artists...",
     selectedCount: "Selected: {n}"
   },
@@ -32,6 +33,7 @@ const I18N = {
     loggedInAs: "вы вошли как:",
     ready: "готово — жмите 'собрать и создать плейлист'",
     selectAll: "Выбрать всех артистов",
+    selectArtists: "Выбрать артистов",
     searchArtists: "Поиск артистов...",
     selectedCount: "Выбрано: {n}"
   },
@@ -50,6 +52,7 @@ const I18N = {
     loggedInAs: "увійшли як:",
     ready: "готово — натисніть 'зібрати та створити плейлист'",
     selectAll: "Вибрати всіх артистів",
+    selectArtists: "Вибрати артистів",
     searchArtists: "Пошук артистів...",
     selectedCount: "Вибрано: {n}"
   },
@@ -68,6 +71,7 @@ const I18N = {
     loggedInAs: "🐈(YOU)",
     ready: "ok — tap on 🐈⚙️✅",
     selectAll: "🐈✅🎤",
+    selectArtists: "🐈🎤✅",
     searchArtists: "🔎🎤...",
     selectedCount: "✅ {n}"
   }
@@ -84,7 +88,6 @@ const placeholderAvatar = (() => {
 
 function applyI18n(lang) {
   const dict = I18N[lang] || I18N.en;
-
   const fmt = (key, params = {}) => {
     let s = dict[key] || I18N.en[key] || "";
     Object.keys(params).forEach(k => {
@@ -102,7 +105,6 @@ function applyI18n(lang) {
       el.textContent = dict[k];
     }
   });
-
   document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
     const k = el.getAttribute("data-i18n-placeholder");
     if (dict[k]) el.setAttribute("placeholder", dict[k]);
@@ -465,12 +467,12 @@ async function runFlow() {
     log(`logged in as: ${me.display_name || me.id} (${me.country})`);
 
     const selectedIds = Array.from(document.querySelectorAll(".artist-checkbox"))
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
 
     let artists = (window._allArtists || []).filter(a => selectedIds.includes(a.id));
     if (!artists.length) {
-        artists = (window._allArtists || []);
+      artists = (window._allArtists || []);
     }
     if (!artists.length) { log("no selected artists found"); return; }
 
@@ -533,80 +535,79 @@ runBtn.onclick = runFlow;
 
     const artists = await fetchAllFollowedArtists();
     if (artists.length) {
-        const artistSel = document.getElementById("artistSelector");
-        const artistList = document.getElementById("artistList");
-        artistSel.style.display = "";
+      const artistList = document.getElementById("artistList");
 
-        function renderArtistList(list) {
-            artistList.innerHTML = '';
-            const frag = document.createDocumentFragment();
+      function renderArtistList(list) {
+        artistList.innerHTML = '';
+        const frag = document.createDocumentFragment();
 
-            list.forEach(a => {
-                const label = document.createElement('label');
-                label.className = 'artist-item';
+        list.forEach(a => {
+          const label = document.createElement('label');
+          label.className = 'artist-item';
 
-                const cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.className = 'form-check-input artist-checkbox';
-                cb.value = a.id;
-                cb.checked = true;
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.className = 'form-check-input artist-checkbox';
+          cb.value = a.id;
+          cb.checked = true;
 
-                const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
-                const img = createSafeImg(imgUrl, '', 'artist-avatar');
+          const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
+          const img = createSafeImg(imgUrl, '', 'artist-avatar');
 
-                const name = document.createElement('span');
-                name.className = 'artist-name';
-                name.textContent = a.name || '';
-                name.title = a.name || '';
+          const name = document.createElement('span');
+          name.className = 'artist-name';
+          name.textContent = a.name || '';
+          name.title = a.name || '';
 
-                label.append(cb, img, name);
-                frag.appendChild(label);
-            });
+          label.append(cb, img, name);
+          frag.appendChild(label);
+        });
 
-            artistList.appendChild(frag);
-            bindArtistCheckboxHandlers();
+        artistList.appendChild(frag);
+        bindArtistCheckboxHandlers();
+        updateSelectedCount();
+      }
+
+      function bindArtistCheckboxHandlers() {
+        document.querySelectorAll(".artist-checkbox").forEach(cb => {
+          cb.onchange = updateSelectedCount;
+        });
+      }
+
+      function updateSelectedCount() {
+        const n = document.querySelectorAll(".artist-checkbox:checked").length;
+        const badge = document.getElementById("artistSelectedCount");
+        const lang = localStorage.getItem("lang") || getPreferredLang();
+        const dict = I18N[lang] || I18N.en;
+        badge.setAttribute("data-i18n-arg-n", String(n));
+        badge.textContent = (dict.selectedCount || "Selected: {n}").replace("{n}", String(n));
+      }
+
+      renderArtistList(artists);
+
+      const selectAllEl = document.getElementById("selectAllArtists");
+      selectAllEl.onchange = e => {
+        document.querySelectorAll(".artist-checkbox").forEach(cb => cb.checked = e.target.checked);
+        updateSelectedCount();
+      };
+
+      const searchEl = document.getElementById("artistSearch");
+      if (searchEl) {
+        searchEl.oninput = () => {
+          const q = searchEl.value.trim().toLowerCase();
+          const filtered = q
+            ? artists.filter(a => (a.name || "").toLowerCase().includes(q))
+            : artists;
+          renderArtistList(filtered);
+          if (selectAllEl.checked) {
+            document.querySelectorAll(".artist-checkbox").forEach(cb => cb.checked = true);
             updateSelectedCount();
-        }
-
-        function bindArtistCheckboxHandlers() {
-            document.querySelectorAll(".artist-checkbox").forEach(cb => {
-                cb.onchange = updateSelectedCount;
-            });
-        }
-
-        function updateSelectedCount() {
-            const n = document.querySelectorAll(".artist-checkbox:checked").length;
-            const badge = document.getElementById("artistSelectedCount");
-            const lang = localStorage.getItem("lang") || getPreferredLang();
-            const dict = I18N[lang] || I18N.en;
-            badge.setAttribute("data-i18n-arg-n", String(n));
-            badge.textContent = (dict.selectedCount || "Selected: {n}").replace("{n}", String(n));
-        }
-
-        renderArtistList(artists);
-
-        const selectAllEl = document.getElementById("selectAllArtists");
-        selectAllEl.onchange = e => {
-            document.querySelectorAll(".artist-checkbox").forEach(cb => cb.checked = e.target.checked);
-            updateSelectedCount();
+          }
         };
+      }
 
-        const searchEl = document.getElementById("artistSearch");
-        if (searchEl) {
-            searchEl.oninput = () => {
-                const q = searchEl.value.trim().toLowerCase();
-                const filtered = q
-                ? artists.filter(a => (a.name || "").toLowerCase().includes(q))
-                : artists;
-                renderArtistList(filtered);
-                if (selectAllEl.checked) {
-                document.querySelectorAll(".artist-checkbox").forEach(cb => cb.checked = true);
-                updateSelectedCount();
-                }
-            };
-        }
-        window._allArtists = artists;
-        }
+      window._allArtists = artists;
+    }
   } else {
     whoamiEl.style.display = "none";
     controlsEl.style.display = "none";

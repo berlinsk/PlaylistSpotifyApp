@@ -29,8 +29,8 @@
     </div>
 
     <div id="whoami" class="mb-3 d-flex align-items-center gap-2" style="display:none">
-        <img id="whoamiAvatar" src="" alt="" class="rounded-circle flex-shrink-0" style="width:40px;height:40px;object-fit:cover;display:none">
-        <div id="whoamiText"></div>
+      <img id="whoamiAvatar" src="" alt="" class="rounded-circle flex-shrink-0" style="width:40px;height:40px;object-fit:cover;display:none">
+      <div id="whoamiText"></div>
     </div>
 
     <div id="controls" style="display:none">
@@ -57,21 +57,9 @@
 
       <div class="input-group mb-3">
         <input id="playlistName" type="text" class="form-control" placeholder="followed artists: all tracks" />
+        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">Select artists</button>
         <button id="run" class="btn btn-success" data-i18n="build">Build and create playlist</button>
       </div>
-    </div>
-
-    <div id="artistSelector" class="mb-3" style="display:none">
-        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-            <label class="form-check m-0">
-                <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
-                <span data-i18n="selectAll">Select all artists</span>
-            </label>
-            <input id="artistSearch" type="search" class="form-control form-control-sm ms-auto" style="max-width:280px"
-                placeholder="" data-i18n-placeholder="searchArtists">
-            <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
-        </div>
-        <div id="artistList" class="artist-list border rounded p-2"></div>
     </div>
 
     <h3 class="h5 mt-4" data-i18n="logTitle">Log</h3>
@@ -81,6 +69,32 @@
       <span data-i18n="scopes">Requires scopes: </span>
       <code>user-follow-read</code>, <code>playlist-modify-private</code>, <code>playlist-modify-public</code>
     </footer>
+  </div>
+
+  <div class="modal fade" id="artistModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="selectArtists">Select artists</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+            <label class="form-check m-0">
+              <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
+              <span data-i18n="selectAll">Select all artists</span>
+            </label>
+            <input id="artistSearch" type="search" class="form-control form-control-sm ms-auto" style="max-width:280px"
+              placeholder="" data-i18n-placeholder="searchArtists">
+            <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+          </div>
+          <div id="artistList" class="artist-list border rounded p-2"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
