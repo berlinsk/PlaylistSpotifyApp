@@ -576,6 +576,13 @@ if (artistOkBtn && artistModalEl) {
         artistList.appendChild(frag);
         bindArtistCheckboxHandlers();
         updateSelectedCount();
+        const mainBtn = document.querySelector('[data-i18n="selectArtists"]');
+        if (mainBtn) {
+            const n = document.querySelectorAll(".artist-checkbox:checked").length;
+            const lang = localStorage.getItem("lang") || getPreferredLang();
+            const dict = I18N[lang] || I18N.en;
+            mainBtn.textContent = (dict.selectedCount || "Selected: {n}").replace("{n}", String(n));
+        }
       }
 
       function bindArtistCheckboxHandlers() {
@@ -586,11 +593,18 @@ if (artistOkBtn && artistModalEl) {
 
       function updateSelectedCount() {
         const n = document.querySelectorAll(".artist-checkbox:checked").length;
-        const badge = document.getElementById("artistSelectedCount");
         const lang = localStorage.getItem("lang") || getPreferredLang();
         const dict = I18N[lang] || I18N.en;
+        const text = (dict.selectedCount || "Selected: {n}").replace("{n}", String(n));
+
+        const badge = document.getElementById("artistSelectedCount");
         badge.setAttribute("data-i18n-arg-n", String(n));
-        badge.textContent = (dict.selectedCount || "Selected: {n}").replace("{n}", String(n));
+        badge.textContent = text;
+
+        const mainBtn = document.querySelector('[data-i18n="selectArtists"]');
+        if (mainBtn) {
+            mainBtn.textContent = text;
+        }
       }
 
       renderArtistList(artists);
