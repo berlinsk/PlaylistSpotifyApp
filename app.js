@@ -76,7 +76,8 @@ const I18N = {
     selectAll: "🐈✅🎤",
     selectArtists: "🐈🎤✅",
     searchArtists: "🔎🎤...",
-    selectedCount: "✅ {n}"
+    selectedCount: "✅ {n}",
+    sharePlaylist: "⤴️✈️"
   }
 };
 
@@ -495,25 +496,26 @@ async function runFlow() {
     const shareContainer = document.getElementById('shareContainer');
     const shareBtn = document.getElementById('shareBtn');
     if (shareContainer && shareBtn) {
-        shareBtn.onclick = async () => {
-            try {
-                if (navigator.share) {
-                    await navigator.share({
-                        title: name,
-                        url: url
-                    });
-                } else {
-                    await navigator.clipboard.writeText(url);
-                    alert('Link copied to clipboard!');
-                }
-            } catch (err) {
-                console.error('Share failed:', err);
-            }
-        };
-        shareContainer.style.display = 'block';
-        requestAnimationFrame(() => {
-            shareContainer.classList.add('fade-in');
-        });
+    shareBtn.onclick = async () => {
+        try {
+        if (navigator.share) {
+            await navigator.share({ title: name, url });
+        } else {
+            await navigator.clipboard.writeText(url);
+            alert('Link copied to clipboard!');
+        }
+        } catch (err) {
+        console.error('Share failed:', err);
+        }
+    };
+
+    shareContainer.style.display = 'block';
+    shareContainer.offsetHeight;
+    shareContainer.classList.add('is-visible');
+
+    shareBtn.classList.remove('shine');
+    shareBtn.offsetWidth;
+    shareBtn.classList.add('shine');
     }
   } catch (e) {
     console.error(e);
