@@ -55,11 +55,13 @@
         </div>
       </div>
 
-      <div class="input-group mb-3">
-        <input id="playlistName" type="text" class="form-control" placeholder="followed artists: all tracks" />
-        <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">Select artists</button>
-        <button id="run" class="btn btn-success" data-i18n="build">Build and create playlist</button>
-      </div>
+        <div class="mb-3">
+            <input id="playlistName" type="text" class="form-control" placeholder="followed artists: all tracks" />
+        </div>
+        <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">Select artists</button>
+            <button id="run" class="btn btn-success flex-fill" data-i18n="build">Build and create playlist</button>
+        </div>
     </div>
 
     <h3 class="h5 mt-4" data-i18n="logTitle">Log</h3>
@@ -79,15 +81,17 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-            <label class="form-check m-0">
-              <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
-              <span data-i18n="selectAll">Select all artists</span>
-            </label>
-            <input id="artistSearch" type="search" class="form-control form-control-sm ms-auto" style="max-width:280px"
-              placeholder="" data-i18n-placeholder="searchArtists">
-            <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
-          </div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <label class="form-check m-0">
+                    <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
+                    <span data-i18n="selectAll">Select all artists</span>
+                </label>
+                <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+            </div>
+            <div class="mb-3">
+                <input id="artistSearch" type="search" class="form-control form-control-sm"
+                    placeholder="" data-i18n-placeholder="searchArtists">
+            </div>
           <div id="artistList" class="artist-list border rounded p-2"></div>
         </div>
         <div class="modal-footer">
