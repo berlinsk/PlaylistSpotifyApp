@@ -507,7 +507,6 @@ if (artistOkBtn && artistModalEl) {
   artistOkBtn.addEventListener('click', () => {
     const modal = bootstrap.Modal.getOrCreateInstance(artistModalEl);
     modal.hide();
-    setTimeout(() => runFlow(), 100);
   });
 }
 
