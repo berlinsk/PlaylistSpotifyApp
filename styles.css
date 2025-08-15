@@ -33,6 +33,10 @@ body {
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
+.fade-in {
+  opacity: 1 !important;
+}
+
 .log {
   background: rgba(15, 23, 42, 0.92);
   color: var(--log-fg);

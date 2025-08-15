@@ -16,7 +16,8 @@ const I18N = {
     selectAll: "Select all artists",
     selectArtists: "Select artists",
     searchArtists: "Search artists...",
-    selectedCount: "Selected: {n}"
+    selectedCount: "Selected: {n}",
+    sharePlaylist: "Share playlist"
   },
   ru: {
     title: "Плейлист из подписанных артистов",
@@ -35,7 +36,8 @@ const I18N = {
     selectAll: "Выбрать всех артистов",
     selectArtists: "Выбрать артистов",
     searchArtists: "Поиск артистов...",
-    selectedCount: "Выбрано: {n}"
+    selectedCount: "Выбрано: {n}",
+    sharePlaylist: "Поделиться плейлистом"
   },
   uk: {
     title: "Плейлист із підписаних артистів",
@@ -54,7 +56,8 @@ const I18N = {
     selectAll: "Вибрати всіх артистів",
     selectArtists: "Вибрати артистів",
     searchArtists: "Пошук артистів...",
-    selectedCount: "Вибрано: {n}"
+    selectedCount: "Вибрано: {n}",
+    sharePlaylist: "Поділитися плейлистом"
   },
   emoji: {
     title: "🐈🎧📜",
@@ -489,6 +492,29 @@ async function runFlow() {
     await replacePlaylistItems(plId, uris);
     const url = `https://open.spotify.com/playlist/${plId}`;
     log(`done! playlist: ${url}`);
+    const shareContainer = document.getElementById('shareContainer');
+    const shareBtn = document.getElementById('shareBtn');
+    if (shareContainer && shareBtn) {
+        shareBtn.onclick = async () => {
+            try {
+                if (navigator.share) {
+                    await navigator.share({
+                        title: name,
+                        url: url
+                    });
+                } else {
+                    await navigator.clipboard.writeText(url);
+                    alert('Link copied to clipboard!');
+                }
+            } catch (err) {
+                console.error('Share failed:', err);
+            }
+        };
+        shareContainer.style.display = 'block';
+        requestAnimationFrame(() => {
+            shareContainer.classList.add('fade-in');
+        });
+    }
   } catch (e) {
     console.error(e);
     log("error: " + (e?.message || e));
