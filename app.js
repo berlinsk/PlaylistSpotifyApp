@@ -578,26 +578,75 @@ if (artistOkBtn && artistModalEl) {
         artistList.innerHTML = '';
         const frag = document.createDocumentFragment();
 
+        const trackCountCache = new Map();
+
+        async function computeTrackCount(artistId, onlySingles) {
+            const mode = onlySingles ? 'single' : 'all';
+            const key = `${artistId}|${mode}`;
+            if (trackCountCache.has(key)) return trackCountCache.get(key);
+
+            const albums = await fetchAllAlbums(artistId, onlySingles);
+            const seen = new Set();
+            for (const alb of albums) {
+                const tracks = await fetchAlbumTracks(alb.id);
+                for (const t of tracks) {
+                    const ids = new Set((t.artists || []).map(z => z.id));
+                    if (!ids.has(artistId)) continue;
+                    seen.add(t.id);
+                }
+            }
+            const n = seen.size;
+            trackCountCache.set(key, n);
+            return n;
+        }
+
+        function updateArtistCountFor(checkbox, { force = false } = {}) {
+            const label = checkbox.closest('.artist-item');
+            if (!label) return;
+            const countEl = label.querySelector('.artist-count');
+            if (!countEl) return;
+
+            if (!checkbox.checked) { countEl.textContent = ''; return; }
+
+            const onlySingles = singlesOnly && singlesOnly.checked;
+            const mode = onlySingles ? 'single' : 'all';
+            const key = `${checkbox.value}|${mode}`;
+
+            countEl.textContent = '(…)';
+
+            if (!force && trackCountCache.has(key)) {
+                countEl.textContent = `(${trackCountCache.get(key)})`;
+                return;
+            }
+
+            computeTrackCount(checkbox.value, onlySingles)
+                .then(n => { countEl.textContent = `(${n})`; })
+                .catch(() => { countEl.textContent = ''; });
+        }
+
         list.forEach(a => {
-          const label = document.createElement('label');
-          label.className = 'artist-item';
+            const label = document.createElement('label');
+            label.className = 'artist-item';
 
-          const cb = document.createElement('input');
-          cb.type = 'checkbox';
-          cb.className = 'form-check-input artist-checkbox';
-          cb.value = a.id;
-          cb.checked = true;
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.className = 'form-check-input artist-checkbox';
+            cb.value = a.id;
+            cb.checked = true;
 
-          const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
-          const img = createSafeImg(imgUrl, '', 'artist-avatar');
+            const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
+            const img = createSafeImg(imgUrl, '', 'artist-avatar');
 
-          const name = document.createElement('span');
-          name.className = 'artist-name';
-          name.textContent = a.name || '';
-          name.title = a.name || '';
+            const name = document.createElement('span');
+            name.className = 'artist-name';
+            name.textContent = a.name || '';
+            name.title = a.name || '';
 
-          label.append(cb, img, name);
-          frag.appendChild(label);
+            const count = document.createElement('span');
+            count.className = 'artist-count';
+
+            label.append(cb, img, name, count);
+            frag.appendChild(label);
         });
 
         artistList.appendChild(frag);
