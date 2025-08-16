@@ -652,6 +652,7 @@ if (artistOkBtn && artistModalEl) {
         artistList.appendChild(frag);
         bindArtistCheckboxHandlers();
         updateSelectedCount();
+        document.querySelectorAll(".artist-checkbox").forEach(cb => updateArtistCountFor(cb));
         const mainBtn = document.querySelector('[data-i18n="selectArtists"]');
         if (mainBtn) {
             const n = document.querySelectorAll(".artist-checkbox:checked").length;
