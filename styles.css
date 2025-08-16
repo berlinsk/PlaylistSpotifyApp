@@ -118,6 +118,12 @@ body {
   font-size: .95rem;
 }
 
+.artist-count {
+  margin-left: auto;
+  color: #6c757d;
+  font-size: .85rem;
+}
+
 .share-container {
   display: none;
   opacity: 0;

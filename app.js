@@ -663,7 +663,10 @@ if (artistOkBtn && artistModalEl) {
 
       function bindArtistCheckboxHandlers() {
         document.querySelectorAll(".artist-checkbox").forEach(cb => {
-          cb.onchange = updateSelectedCount;
+            cb.onchange = () => {
+                updateSelectedCount();
+                updateArtistCountFor(cb);
+            };
         });
       }
 
@@ -684,6 +687,14 @@ if (artistOkBtn && artistModalEl) {
       }
 
       renderArtistList(artists);
+
+      if (singlesOnly) {
+        singlesOnly.onchange = () => {
+            document.querySelectorAll(".artist-checkbox:checked").forEach(cb => {
+                updateArtistCountFor(cb, { force: true });
+            });
+        };
+      }
 
       const selectAllEl = document.getElementById("selectAllArtists");
       selectAllEl.onchange = e => {
