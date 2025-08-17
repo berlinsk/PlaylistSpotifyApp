@@ -17,7 +17,11 @@ const I18N = {
     selectArtists: "Select artists",
     searchArtists: "Search artists...",
     selectedCount: "Selected: {n}",
-    sharePlaylist: "Share playlist"
+    sharePlaylist: "Share playlist",
+    showCounts: "Show track counts",
+    countsTitle: "Track counts",
+    calculating: "Calculating",
+    close: "Close"
   },
   ru: {
     title: "Плейлист из подписанных артистов",
@@ -37,7 +41,11 @@ const I18N = {
     selectArtists: "Выбрать артистов",
     searchArtists: "Поиск артистов...",
     selectedCount: "Выбрано: {n}",
-    sharePlaylist: "Поделиться плейлистом"
+    sharePlaylist: "Поделиться плейлистом",
+    showCounts: "Показать количество треков",
+    countsTitle: "Количество треков",
+    calculating: "Идёт подсчёт",
+    close: "Закрыть"
   },
   uk: {
     title: "Плейлист із підписаних артистів",
@@ -57,7 +65,11 @@ const I18N = {
     selectArtists: "Вибрати артистів",
     searchArtists: "Пошук артистів...",
     selectedCount: "Вибрано: {n}",
-    sharePlaylist: "Поділитися плейлистом"
+    sharePlaylist: "Поділитися плейлистом",
+    showCounts: "Показати кількість треків",
+    countsTitle: "Кількість треків",
+    calculating: "Йде підрахунок",
+    close: "Закрити"
   },
   emoji: {
     title: "🐈🎧📜",
@@ -77,7 +89,11 @@ const I18N = {
     selectArtists: "🐈🎤✅",
     searchArtists: "🔎🎤...",
     selectedCount: "✅ {n}",
-    sharePlaylist: "⤴️✈️"
+    sharePlaylist: "⤴️✈️",
+    showCounts: "🐈➕🎵",
+    countsTitle: "🎤#🎵",
+    calculating: "⏳",
+    close: "🏁"
   }
 };
 
@@ -322,14 +338,14 @@ async function fetchAllFollowedArtists() {
   return all;
 }
 
-async function fetchAllAlbums(artistId, singlesOnly) {
+async function fetchAllAlbums(artistId, singlesOnly, signal) {
   const out = [];
   let url = new URL(`https://api.spotify.com/v1/artists/${artistId}/albums`);
   url.searchParams.set("limit", "50");
   url.searchParams.set("include_groups", singlesOnly ? "single" : "album,single");
   url.searchParams.set("market", "from_token");
   for (;;) {
-    const j = await api(url.toString());
+    const j = await api(url.toString(), { signal });
     out.push(...j.items);
     if (!j.next) break;
     url = new URL(j.next);
@@ -337,13 +353,13 @@ async function fetchAllAlbums(artistId, singlesOnly) {
   return out;
 }
 
-async function fetchAlbumTracks(albumId) {
+async function fetchAlbumTracks(albumId, signal) {
   const out = [];
   let url = new URL(`https://api.spotify.com/v1/albums/${albumId}/tracks`);
   url.searchParams.set("limit", "50");
   url.searchParams.set("market", "from_token");
   for (;;) {
-    const j = await api(url.toString());
+    const j = await api(url.toString(), { signal });
     out.push(...j.items);
     if (!j.next) break;
     url = new URL(j.next);
@@ -358,10 +374,10 @@ function parseReleaseDate(d, precision) {
   return Date.parse(d);
 }
 
-async function fetchTopTracks(artistId) {
+async function fetchTopTracks(artistId, signal) {
   const url = new URL(`https://api.spotify.com/v1/artists/${artistId}/top-tracks`);
   url.searchParams.set("market", "from_token");
-  const j = await api(url.toString());
+  const j = await api(url.toString(), { signal });
   return j.tracks || [];
 }
 
@@ -538,6 +554,100 @@ if (artistOkBtn && artistModalEl) {
   });
 }
 
+// counts modal: старт подсчёта на открытии, остановка на закрытии
+const countsModalEl = document.getElementById('countsModal');
+let countsAbortCtrl = null;
+
+async function computeTrackCounts(artists, opts, onUpdate) {
+  const signal = opts && opts.signal ? opts.signal : undefined;
+  for (const a of artists) {
+    if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+
+    const albums = await fetchAllAlbums(a.id, !!opts.singlesOnly, signal);
+    if (!albums.length) {
+      const tracks = await fetchTopTracks(a.id, signal);
+      onUpdate(a.id, tracks.length);
+      continue;
+    }
+
+    const seen = new Set();
+    for (const alb of albums) {
+      const tracks = await fetchAlbumTracks(alb.id, signal);
+      for (const t of tracks) {
+        const ids = new Set((t.artists || []).map(z => z.id));
+        if (!ids.has(a.id)) continue;
+        if (seen.has(t.id)) continue;
+        seen.add(t.id);
+      }
+      onUpdate(a.id, seen.size);
+      if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+    }
+    onUpdate(a.id, seen.size);
+  }
+}
+
+if (countsModalEl) {
+  countsModalEl.addEventListener('shown.bs.modal', async () => {
+    const countsList = document.getElementById('countsList');
+    const countsProgress = document.getElementById('countsProgress');
+    countsList.innerHTML = '';
+
+    const selectedIds = Array.from(document.querySelectorAll(".artist-checkbox"))
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
+    const artists = (window._allArtists || []).filter(a => selectedIds.includes(a.id));
+
+    const lang = localStorage.getItem("lang") || getPreferredLang();
+    const dict = I18N[lang] || I18N.en;
+    countsProgress.textContent = dict.calculating || "Calculating";
+
+    artists.forEach(a => {
+      const label = document.createElement('label');
+      label.className = 'artist-item';
+
+      const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
+      const img = createSafeImg(imgUrl, '', 'artist-avatar');
+
+      const name = document.createElement('span');
+      name.className = 'artist-name';
+      name.textContent = a.name || '';
+
+      const badge = document.createElement('span');
+      badge.className = 'badge bg-secondary';
+      badge.setAttribute('data-artist-id', a.id);
+      badge.textContent = '0';
+
+      label.append(img, name, badge);
+      countsList.appendChild(label);
+    });
+
+    countsAbortCtrl = new AbortController();
+    try {
+      await computeTrackCounts(
+        artists,
+        { singlesOnly: singlesOnly.checked, signal: countsAbortCtrl.signal },
+        (artistId, count) => {
+          const badge = countsList.querySelector(`.badge[data-artist-id="${artistId}"]`);
+          if (badge) badge.textContent = String(count);
+        }
+      );
+    } catch (err) {
+      if (!(err && err.name === 'AbortError')) {
+        console.error('count error:', err);
+      }
+    } finally {
+      countsProgress.textContent = '';
+    }
+  });
+
+  countsModalEl.addEventListener('hide.bs.modal', () => {
+    if (countsAbortCtrl) {
+      countsAbortCtrl.abort();
+      countsAbortCtrl = null;
+    }
+  });
+}
+
 (async function init() {
   const initialLang = localStorage.getItem("lang") || getPreferredLang();
   applyI18n(initialLang);
@@ -578,81 +688,31 @@ if (artistOkBtn && artistModalEl) {
         artistList.innerHTML = '';
         const frag = document.createDocumentFragment();
 
-        const trackCountCache = new Map();
-
-        async function computeTrackCount(artistId, onlySingles) {
-            const mode = onlySingles ? 'single' : 'all';
-            const key = `${artistId}|${mode}`;
-            if (trackCountCache.has(key)) return trackCountCache.get(key);
-
-            const albums = await fetchAllAlbums(artistId, onlySingles);
-            const seen = new Set();
-            for (const alb of albums) {
-                const tracks = await fetchAlbumTracks(alb.id);
-                for (const t of tracks) {
-                    const ids = new Set((t.artists || []).map(z => z.id));
-                    if (!ids.has(artistId)) continue;
-                    seen.add(t.id);
-                }
-            }
-            const n = seen.size;
-            trackCountCache.set(key, n);
-            return n;
-        }
-
-        function updateArtistCountFor(checkbox, { force = false } = {}) {
-            const label = checkbox.closest('.artist-item');
-            if (!label) return;
-            const countEl = label.querySelector('.artist-count');
-            if (!countEl) return;
-
-            if (!checkbox.checked) { countEl.textContent = ''; return; }
-
-            const onlySingles = singlesOnly && singlesOnly.checked;
-            const mode = onlySingles ? 'single' : 'all';
-            const key = `${checkbox.value}|${mode}`;
-
-            countEl.textContent = '(…)';
-
-            if (!force && trackCountCache.has(key)) {
-                countEl.textContent = `(${trackCountCache.get(key)})`;
-                return;
-            }
-
-            computeTrackCount(checkbox.value, onlySingles)
-                .then(n => { countEl.textContent = `(${n})`; })
-                .catch(() => { countEl.textContent = ''; });
-        }
-
         list.forEach(a => {
-            const label = document.createElement('label');
-            label.className = 'artist-item';
+          const label = document.createElement('label');
+          label.className = 'artist-item';
 
-            const cb = document.createElement('input');
-            cb.type = 'checkbox';
-            cb.className = 'form-check-input artist-checkbox';
-            cb.value = a.id;
-            cb.checked = true;
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.className = 'form-check-input artist-checkbox';
+          cb.value = a.id;
+          cb.checked = true;
 
-            const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
-            const img = createSafeImg(imgUrl, '', 'artist-avatar');
+          const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
+          const img = createSafeImg(imgUrl, '', 'artist-avatar');
 
-            const name = document.createElement('span');
-            name.className = 'artist-name';
-            name.textContent = a.name || '';
-            name.title = a.name || '';
+          const name = document.createElement('span');
+          name.className = 'artist-name';
+          name.textContent = a.name || '';
+          name.title = a.name || '';
 
-            const count = document.createElement('span');
-            count.className = 'artist-count';
-
-            label.append(cb, img, name, count);
-            frag.appendChild(label);
+          label.append(cb, img, name);
+          frag.appendChild(label);
         });
 
         artistList.appendChild(frag);
         bindArtistCheckboxHandlers();
         updateSelectedCount();
-        document.querySelectorAll(".artist-checkbox").forEach(cb => updateArtistCountFor(cb));
         const mainBtn = document.querySelector('[data-i18n="selectArtists"]');
         if (mainBtn) {
             const n = document.querySelectorAll(".artist-checkbox:checked").length;
@@ -664,10 +724,7 @@ if (artistOkBtn && artistModalEl) {
 
       function bindArtistCheckboxHandlers() {
         document.querySelectorAll(".artist-checkbox").forEach(cb => {
-            cb.onchange = () => {
-                updateSelectedCount();
-                updateArtistCountFor(cb);
-            };
+          cb.onchange = updateSelectedCount;
         });
       }
 
@@ -688,14 +745,6 @@ if (artistOkBtn && artistModalEl) {
       }
 
       renderArtistList(artists);
-
-      if (singlesOnly) {
-        singlesOnly.onchange = () => {
-            document.querySelectorAll(".artist-checkbox:checked").forEach(cb => {
-                updateArtistCountFor(cb, { force: true });
-            });
-        };
-      }
 
       const selectAllEl = document.getElementById("selectAllArtists");
       selectAllEl.onchange = e => {

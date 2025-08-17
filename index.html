@@ -79,33 +79,52 @@
     </footer>
   </div>
 
-  <div class="modal fade" id="artistModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" data-i18n="selectArtists">Select artists</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="d-flex align-items-center gap-2 mb-2">
-                <label class="form-check m-0">
-                    <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
-                    <span data-i18n="selectAll">Select all artists</span>
-                </label>
-                <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+    <div class="modal fade" id="artistModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" data-i18n="selectArtists">Select artists</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="mb-3">
-                <input id="artistSearch" type="search" class="form-control form-control-sm"
-                    placeholder="" data-i18n-placeholder="searchArtists">
+            <div class="modal-body">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <label class="form-check m-0">
+                        <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
+                        <span data-i18n="selectAll">Select all artists</span>
+                    </label>
+                    <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+                </div>
+                <div class="mb-3">
+                    <input id="artistSearch" type="search" class="form-control form-control-sm"
+                        placeholder="" data-i18n-placeholder="searchArtists">
+                </div>
+            <div id="artistList" class="artist-list border rounded p-2"></div>
             </div>
-          <div id="artistList" class="artist-list border rounded p-2"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-info me-auto" id="showCounts" data-bs-toggle="modal" data-bs-target="#countsModal" data-i18n="showCounts">Show track counts</button>
+                <button type="button" class="btn btn-secondary" id="artistOk" data-bs-dismiss="modal">OK</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" id="artistOk" data-bs-dismiss="modal">OK</button>
         </div>
-      </div>
     </div>
-  </div>
+
+    <div class="modal fade" id="countsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" data-i18n="countsTitle">Track counts</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="countsProgress" class="text-muted small mb-2" data-i18n="calculating">Calculating</div>
+                <div id="countsList" class="artist-list border rounded p-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
+            </div>
+            </div>
+        </div>
+    </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="app.js"></script>
