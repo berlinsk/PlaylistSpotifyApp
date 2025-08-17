@@ -21,7 +21,8 @@ const I18N = {
     showCounts: "Show track counts",
     countsTitle: "Track counts",
     calculating: "Calculating",
-    close: "Close"
+    close: "Close",
+    rateLimitWait: "rate limited, wait {n}s"
   },
   ru: {
     title: "Плейлист из подписанных артистов",
@@ -45,7 +46,8 @@ const I18N = {
     showCounts: "Показать количество треков",
     countsTitle: "Количество треков",
     calculating: "Идёт подсчёт",
-    close: "Закрыть"
+    close: "Закрыть",
+    rateLimitWait: "Spotify устал, подождите {n} с."
   },
   uk: {
     title: "Плейлист із підписаних артистів",
@@ -69,7 +71,8 @@ const I18N = {
     showCounts: "Показати кількість треків",
     countsTitle: "Кількість треків",
     calculating: "Йде підрахунок",
-    close: "Закрити"
+    close: "Закрити",
+    rateLimitWait: "Spotify втомився, зачекайте {n} с."
   },
   emoji: {
     title: "🐈🎧📜",
@@ -93,7 +96,8 @@ const I18N = {
     showCounts: "🐈➕🎵",
     countsTitle: "🎤#🎵",
     calculating: "⏳",
-    close: "🏁"
+    close: "🏁",
+    rateLimitWait: "🐌⏳ {n}s"
   }
 };
 
@@ -253,8 +257,13 @@ async function api(url, opts={}) {
     });
     if (r.status === 401) { await refreshAccessToken(); continue; }
     if (r.status === 429) {
-      const retry = parseInt(r.headers.get("Retry-After")||"1", 10);
-      log(`rate limited, wait ${retry}s`); await new Promise(res => setTimeout(res, (retry+1)*1000)); continue;
+        const retry = parseInt(r.headers.get("Retry-After") || "1", 10);
+        const lang = localStorage.getItem("lang") || getPreferredLang();
+        const dict = I18N[lang] || I18N.en;
+        const msg = (dict.rateLimitWait || "wait {n}s").replace("{n}", retry);
+        log(`${msg} (${url})`);
+        await new Promise(res => setTimeout(res, (retry + 1) * 1000));
+        continue;
     }
     if (!r.ok) {
       const t = await r.text();
@@ -554,7 +563,6 @@ if (artistOkBtn && artistModalEl) {
   });
 }
 
-// counts modal: старт подсчёта на открытии, остановка на закрытии
 const countsModalEl = document.getElementById('countsModal');
 let countsAbortCtrl = null;
 
@@ -696,7 +704,8 @@ if (countsModalEl) {
           cb.type = 'checkbox';
           cb.className = 'form-check-input artist-checkbox';
           cb.value = a.id;
-          cb.checked = true;
+          const saved = JSON.parse(localStorage.getItem("selectedArtists") || "[]");
+          cb.checked = saved.includes(a.id);
 
           const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
           const img = createSafeImg(imgUrl, '', 'artist-avatar');
@@ -729,7 +738,11 @@ if (countsModalEl) {
       }
 
       function updateSelectedCount() {
-        const n = document.querySelectorAll(".artist-checkbox:checked").length;
+        const checkedIds = Array.from(document.querySelectorAll(".artist-checkbox:checked"))
+            .map(cb => cb.value);
+        localStorage.setItem("selectedArtists", JSON.stringify(checkedIds));
+
+        const n = checkedIds.length;
         const lang = localStorage.getItem("lang") || getPreferredLang();
         const dict = I18N[lang] || I18N.en;
         const text = (dict.selectedCount || "Selected: {n}").replace("{n}", String(n));
