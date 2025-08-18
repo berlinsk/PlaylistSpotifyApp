@@ -565,6 +565,7 @@ if (artistOkBtn && artistModalEl) {
 
 const countsModalEl = document.getElementById('countsModal');
 let countsAbortCtrl = null;
+const countsCache = { true: new Map(), false: new Map() };
 
 async function computeTrackCounts(artists, opts, onUpdate) {
   const signal = opts && opts.signal ? opts.signal : undefined;
@@ -607,7 +608,8 @@ if (countsModalEl) {
 
     const lang = localStorage.getItem("lang") || getPreferredLang();
     const dict = I18N[lang] || I18N.en;
-    countsProgress.textContent = dict.calculating || "Calculating";
+
+    const cacheMap = countsCache[singlesOnly.checked ? true : false];
 
     artists.forEach(a => {
       const label = document.createElement('label');
@@ -623,20 +625,30 @@ if (countsModalEl) {
       const badge = document.createElement('span');
       badge.className = 'badge bg-secondary';
       badge.setAttribute('data-artist-id', a.id);
-      badge.textContent = '0';
+      badge.textContent = cacheMap.has(a.id) ? String(cacheMap.get(a.id)) : '0';
 
       label.append(img, name, badge);
       countsList.appendChild(label);
     });
 
+    const missing = artists.filter(a => !cacheMap.has(a.id));
+
+    if (missing.length === 0) {
+      countsProgress.textContent = '';
+      return;
+    }
+
+    countsProgress.textContent = dict.calculating || "Calculating";
+
     countsAbortCtrl = new AbortController();
     try {
       await computeTrackCounts(
-        artists,
+        missing,
         { singlesOnly: singlesOnly.checked, signal: countsAbortCtrl.signal },
         (artistId, count) => {
           const badge = countsList.querySelector(`.badge[data-artist-id="${artistId}"]`);
           if (badge) badge.textContent = String(count);
+          cacheMap.set(artistId, count);
         }
       );
     } catch (err) {
