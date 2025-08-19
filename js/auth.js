@@ -11,7 +11,8 @@ export const REDIRECT_URI = (() => {
 export const SCOPES = [
   "user-follow-read",
   "playlist-modify-private",
-  "playlist-modify-public"
+  "playlist-modify-public",
+  "ugc-image-upload"
 ].join(" ");
 
 function base64urlencode(a) {

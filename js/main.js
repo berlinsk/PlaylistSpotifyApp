@@ -10,6 +10,8 @@ import {
 } from "./spotify.js";
 import { renderArtistList, bindArtistCheckboxHandlers, updateSelectedCount } from "./ui.js";
 import { setupCountsModal } from "./counts.js";
+import { setupCoverModal, getCoverDataUrl } from "./cover.js";
+import { setPlaylistCover } from "./spotify.js";
 
 const loginBtn = document.getElementById("login");
 const logoutBtn = document.getElementById("logout");
@@ -55,6 +57,18 @@ async function runFlow() {
     const url = `https://open.spotify.com/playlist/${plId}`;
     log(`done! playlist: ${url}`);
 
+    try {
+        const cover = getCoverDataUrl();
+        if (cover) {
+            log("uploading cover…");
+            await setPlaylistCover(plId, cover);
+            log("cover uploaded");
+        }
+    } catch (e) {
+        console.error(e);
+        log("cover upload failed");
+    }
+
     const shareContainer = document.getElementById('shareContainer');
     const shareBtn = document.getElementById('shareBtn');
     if (shareContainer && shareBtn) {
@@ -97,6 +111,7 @@ if (artistOkBtn && artistModalEl) {
 }
 
 setupCountsModal(countsModalEl, singlesOnly);
+setupCoverModal();
 
 (async function init() {
   const initialLang = localStorage.getItem("lang") || getPreferredLang();

@@ -22,7 +22,16 @@ export const I18N = {
     countsTitle: "Track counts",
     calculating: "Calculating",
     close: "Close",
-    rateLimitWait: "rate limited, wait {n}s"
+    rateLimitWait: "rate limited, wait {n}s",
+    coverBtn: "Playlist cover",
+    coverTitle: "Playlist cover",
+    chooseFile: "Choose from device",
+    or: "or",
+    pasteUrl: "Paste image URL",
+    preview: "Preview",
+    apply: "Apply",
+    removeImage: "Remove image",
+    coverHint: "JPEG up to 256 KB. We will compress automatically if needed."
   },
   ru: {
     title: "Плейлист из подписанных артистов",
@@ -47,7 +56,16 @@ export const I18N = {
     countsTitle: "Количество треков",
     calculating: "Идёт подсчёт",
     close: "Закрыть",
-    rateLimitWait: "Spotify устал, подождите {n} с."
+    rateLimitWait: "Spotify устал, подождите {n} с.",
+    coverBtn: "Обложка плейлиста",
+    coverTitle: "Обложка плейлиста",
+    chooseFile: "Выбрать с устройства",
+    or: "или",
+    pasteUrl: "Вставьте URL изображения",
+    preview: "Предпросмотр",
+    apply: "Применить",
+    removeImage: "Убрать обложку",
+    coverHint: "JPEG до 256 КБ. Мы автоматически сожмём при необходимости."
   },
   uk: {
     title: "Плейлист із підписаних артистів",
@@ -72,7 +90,16 @@ export const I18N = {
     countsTitle: "Кількість треків",
     calculating: "Йде підрахунок",
     close: "Закрити",
-    rateLimitWait: "Spotify втомився, зачекайте {n} с."
+    rateLimitWait: "Spotify втомився, зачекайте {n} с.",
+    coverBtn: "Обкладинка плейлиста",
+    coverTitle: "Обкладинка плейлиста",
+    chooseFile: "Обрати з пристрою",
+    or: "або",
+    pasteUrl: "Вставте URL зображення",
+    preview: "Попередній перегляд",
+    apply: "Застосувати",
+    removeImage: "Прибрати обкладинку",
+    coverHint: "JPEG до 256 КБ. Ми автоматично стиснемо за потреби."
   },
   emoji: {
     title: "🐈🎧📜",
@@ -97,7 +124,16 @@ export const I18N = {
     countsTitle: "🎤#🎵",
     calculating: "⏳",
     close: "🏁",
-    rateLimitWait: "🐌⏳ {n}s"
+    rateLimitWait: "🐌⏳ {n}s",
+    coverBtn: "🖼️",
+    coverTitle: "🖼️",
+    chooseFile: "📱⬆️",
+    or: "or",
+    pasteUrl: "🌐 URL",
+    preview: "👀",
+    apply: "✅",
+    removeImage: "🗑️",
+    coverHint: "JPEG ≤256KB"
   }
 };
 

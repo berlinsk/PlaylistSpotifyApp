@@ -145,6 +145,27 @@ export async function buildAllTrackUris(artists, opts) {
   return result.map(x => x.uri);
 }
 
+export async function setPlaylistCover(playlistId, dataUrl) {
+  const base64 = dataUrl.split(",")[1];
+  const byteStr = atob(base64);
+  const buf = new Uint8Array(byteStr.length);
+  for (let i = 0; i < byteStr.length; i++) buf[i] = byteStr.charCodeAt(i);
+
+  const token = await getAccessToken();
+  const r = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/images`, {
+    method: "PUT",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "image/jpeg"
+    },
+    body: buf.buffer
+  });
+  if (r.status !== 202) {
+    const txt = await r.text().catch(() => "");
+    throw new Error(`cover upload status ${r.status} ${txt}`);
+  }
+}
+
 export async function createPlaylist(userId, name, isPublic) {
   const j = await api(`https://api.spotify.com/v1/users/${encodeURIComponent(userId)}/playlists`, {
     method: "POST",

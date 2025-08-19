@@ -55,8 +55,9 @@
         </div>
       </div>
 
-        <div class="mb-3">
+        <div class="mb-3 d-flex gap-2">
             <input id="playlistName" type="text" class="form-control" placeholder="followed artists: all tracks" />
+            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#coverModal" data-i18n="coverBtn">Playlist cover</button>
         </div>
         <div class="d-flex gap-2 mb-3">
             <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">Select artists</button>
@@ -122,6 +123,41 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
             </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="coverModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" data-i18n="coverTitle">Playlist cover</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <button id="coverChooseBtn" type="button" class="btn btn-outline-secondary" data-i18n="chooseFile">
+                            Choose from device
+                        </button>
+                        <input id="coverFile" type="file" accept="image/*" class="visually-hidden">
+                    </div>
+
+                    <div class="text-center text-muted small mb-2" data-i18n="or">or</div>
+
+                    <div class="input-group mb-3">
+                        <input id="coverUrl" type="url" class="form-control" placeholder="https://example.com/image.jpg" data-i18n-placeholder="pasteUrl">
+                        <button id="coverLoadUrl" class="btn btn-outline-primary" type="button" data-i18n="preview">Preview</button>
+                    </div>
+
+                    <div class="ratio ratio-1x1 border rounded overflow-hidden mb-2 bg-light">
+                        <img id="coverPreview" alt="" style="object-fit:cover;width:100%;height:100%;">
+                    </div>
+                    <div class="text-muted small" data-i18n="coverHint">JPEG up to 256 KB. We will compress automatically if needed.</div>
+                </div>
+                <div class="modal-footer">
+                    <button id="coverRemove" type="button" class="btn btn-outline-danger" data-i18n="removeImage">Remove image</button>
+                    <button id="coverApply" type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
+                </div>
             </div>
         </div>
     </div>

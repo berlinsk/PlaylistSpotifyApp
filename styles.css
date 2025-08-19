@@ -158,6 +158,12 @@ body {
   animation: shareShine 900ms ease both;
 }
 
+#coverPreview {
+  transition: opacity .2s ease;
+  opacity: 0;
+}
+#coverPreview.is-visible { opacity: 1; display:block; }
+
 @keyframes shareShine {
   from { left: -150%; }
   to   { left: 150%;  }
