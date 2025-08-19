@@ -63,6 +63,7 @@ export function setupCoverModal() {
   const urlEl = document.getElementById("coverUrl");
   const loadUrlBtn = document.getElementById("coverLoadUrl");
   const previewEl = document.getElementById("coverPreview");
+  const previewWrap = document.getElementById("coverPreviewWrap");
   const applyBtn = document.getElementById("coverApply");
   const removeBtn = document.getElementById("coverRemove");
   const chooseBtn = document.getElementById("coverChooseBtn");
@@ -71,7 +72,7 @@ export function setupCoverModal() {
   const showPreview = (dataUrl) => {
     currentDataUrl = dataUrl;
     previewEl.src = dataUrl;
-    previewEl.style.display = "block";
+    previewWrap.classList.remove("d-none");
     previewEl.classList.add("is-visible");
   };
 
@@ -107,6 +108,7 @@ export function setupCoverModal() {
     currentDataUrl = null;
     previewEl.src = "";
     previewEl.classList.remove("is-visible");
+    previewWrap.classList.add("d-none");
     fileEl.value = "";
     urlEl.value = "";
   };
