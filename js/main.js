@@ -66,7 +66,7 @@ async function runFlow() {
         }
     } catch (e) {
         console.error(e);
-        log("cover upload failed");
+        log(`cover upload failed: ${e?.message || e}`);
     }
 
     const shareContainer = document.getElementById('shareContainer');
