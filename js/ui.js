@@ -7,20 +7,20 @@ export function renderArtistList(artistListEl, artists) {
 
   artists.forEach(a => {
     const label = document.createElement('label');
-    label.className = 'artist-item';
+    label.className = 'artist-item sp-row';
 
     const cb = document.createElement('input');
     cb.type = 'checkbox';
-    cb.className = 'form-check-input artist-checkbox';
+    cb.className = 'form-check-input artist-checkbox sp-check me-2';
     cb.value = a.id;
     const saved = JSON.parse(localStorage.getItem("selectedArtists") || "[]");
     cb.checked = saved.includes(a.id);
 
     const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
-    const img = createSafeImg(imgUrl, '', 'artist-avatar');
+    const img = createSafeImg(imgUrl, '', 'artist-avatar sp-avatar');
 
     const name = document.createElement('span');
-    name.className = 'artist-name';
+    name.className = 'artist-name sp-ellipsis';
     name.textContent = a.name || '';
     name.title = a.name || '';
 

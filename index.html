@@ -55,20 +55,20 @@
         </div>
       </div>
 
-        <div class="mb-3 d-flex gap-2">
-            <input id="playlistName" type="text" class="form-control" placeholder="followed artists: all tracks" />
-            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#coverModal" data-i18n="coverBtn">Playlist cover</button>
-        </div>
-        <div class="d-flex gap-2 mb-3">
-            <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">Select artists</button>
-            <button id="run" class="btn btn-success flex-fill" data-i18n="build">Build and create playlist</button>
-        </div>
+      <div class="mb-3 d-flex gap-2">
+        <input id="playlistName" type="text" class="form-control" placeholder="followed artists: all tracks" />
+        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#coverModal" data-i18n="coverBtn">Playlist cover</button>
+      </div>
+      <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">Select artists</button>
+        <button id="run" class="btn btn-success flex-fill" data-i18n="build">Build and create playlist</button>
+      </div>
 
-        <div id="shareContainer" class="mb-3 share-container">
-            <button id="shareBtn" class="btn btn-outline-secondary w-100 btn-share" data-i18n="sharePlaylist">
-                Share playlist
-            </button>
-        </div>
+      <div id="shareContainer" class="mb-3 share-container">
+        <button id="shareBtn" class="btn btn-outline-secondary w-100 btn-share" data-i18n="sharePlaylist">
+          Share playlist
+        </button>
+      </div>
     </div>
 
     <h3 class="h5 mt-4" data-i18n="logTitle">Log</h3>
@@ -80,91 +80,91 @@
     </footer>
   </div>
 
-    <div class="modal fade" id="artistModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" data-i18n="selectArtists">Select artists</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <label class="form-check m-0">
-                        <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
-                        <span data-i18n="selectAll">Select all artists</span>
-                    </label>
-                    <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
-                </div>
-                <div class="mb-3">
-                    <input id="artistSearch" type="search" class="form-control form-control-sm"
-                        placeholder="" data-i18n-placeholder="searchArtists">
-                </div>
-            <div id="artistList" class="artist-list border rounded p-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-info me-auto" id="showCounts" data-bs-toggle="modal" data-bs-target="#countsModal" data-i18n="showCounts">Show track counts</button>
-                <button type="button" class="btn btn-secondary" id="artistOk" data-bs-dismiss="modal">OK</button>
-            </div>
+  <div class="modal fade" id="artistModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="selectArtists">Select artists</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <div class="modal-body">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <label class="form-check m-0">
+              <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
+              <span data-i18n="selectAll">Select all artists</span>
+            </label>
+            <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+          </div>
+          <div class="mb-3">
+            <input id="artistSearch" type="search" class="form-control form-control-sm"
+              placeholder="" data-i18n-placeholder="searchArtists">
+          </div>
+          <div id="artistList" class="artist-list border rounded p-2"></div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-info me-auto" id="showCounts" data-bs-toggle="modal" data-bs-target="#countsModal" data-i18n="showCounts">Show track counts</button>
+          <button type="button" class="btn btn-secondary" id="artistOk" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="modal fade" id="countsModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" data-i18n="countsTitle">Track counts</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="countsProgress" class="text-muted small mb-2" data-i18n="calculating">Calculating</div>
-                <div id="countsList" class="artist-list border rounded p-2"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
-            </div>
-            </div>
+  <div class="modal fade" id="countsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="countsTitle">Track counts</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-    </div>
-
-    <div class="modal fade" id="coverModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" data-i18n="coverTitle">Playlist cover</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <button id="coverChooseBtn" type="button" class="btn btn-outline-secondary w-100" data-i18n="chooseFile">
-                            Choose from device
-                        </button>
-                        <input id="coverFile" type="file" accept="image/*" class="visually-hidden">
-                    </div>
-
-                    <div class="text-center text-muted small mb-2" data-i18n="or">or</div>
-
-                    <div class="mb-3">
-                        <input id="coverUrl" type="url" class="form-control mb-2"
-                                placeholder="https://example.com/image.jpg"
-                                data-i18n-placeholder="pasteUrl">
-                        <button id="coverLoadUrl" class="btn btn-outline-primary w-100" type="button" data-i18n="preview">
-                            Preview
-                        </button>
-                    </div>
-
-                    <div id="coverPreviewWrap" class="ratio ratio-1x1 border rounded overflow-hidden mb-2 bg-light d-none">
-                        <img id="coverPreview" alt="" style="object-fit:cover;width:100%;height:100%;">
-                    </div>
-                    <div class="text-muted small" data-i18n="coverHint">JPEG up to 256 KB. We will compress automatically if needed.</div>
-                </div>
-                <div class="modal-footer">
-                    <button id="coverRemove" type="button" class="btn btn-outline-danger" data-i18n="removeImage">Remove image</button>
-                    <button id="coverApply" type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
-                </div>
-            </div>
+        <div class="modal-body">
+          <div id="countsProgress" class="text-muted small mb-2" data-i18n="calculating">Calculating</div>
+          <div id="countsList" class="artist-list border rounded p-2"></div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="modal fade" id="coverModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="coverTitle">Playlist cover</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <button id="coverChooseBtn" type="button" class="btn btn-outline-secondary w-100" data-i18n="chooseFile">
+              Choose from device
+            </button>
+            <input id="coverFile" type="file" accept="image/*" class="visually-hidden">
+          </div>
+
+          <div class="text-center text-muted small mb-2" data-i18n="or">or</div>
+
+          <div class="mb-3">
+            <input id="coverUrl" type="url" class="form-control mb-2"
+              placeholder="https://example.com/image.jpg"
+              data-i18n-placeholder="pasteUrl">
+            <button id="coverLoadUrl" class="btn btn-outline-primary w-100" type="button" data-i18n="preview">
+              Preview
+            </button>
+          </div>
+
+          <div id="coverPreviewWrap" class="ratio ratio-1x1 border rounded overflow-hidden mb-2 bg-light d-none">
+            <img id="coverPreview" alt="" style="object-fit:cover;width:100%;height:100%;">
+          </div>
+          <div class="text-muted small" data-i18n="coverHint">JPEG up to 256 KB. We will compress automatically if needed.</div>
+        </div>
+        <div class="modal-footer">
+          <button id="coverRemove" type="button" class="btn btn-outline-danger" data-i18n="removeImage">Remove image</button>
+          <button id="coverApply" type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script type="module" src="js/main.js"></script>

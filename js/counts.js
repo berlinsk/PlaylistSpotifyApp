@@ -52,17 +52,17 @@ export function setupCountsModal(countsModalEl, singlesOnlyCheckbox) {
 
     artists.forEach(a => {
       const label = document.createElement('label');
-      label.className = 'artist-item';
+      label.className = 'artist-item sp-row';
 
       const imgUrl = (a.images && a.images[0] && a.images[0].url) ? a.images[0].url : '';
-      const img = createSafeImg(imgUrl, '', 'artist-avatar');
+      const img = createSafeImg(imgUrl, '', 'artist-avatar sp-avatar');
 
       const name = document.createElement('span');
-      name.className = 'artist-name';
+      name.className = 'artist-name sp-ellipsis';
       name.textContent = a.name || '';
 
       const badge = document.createElement('span');
-      badge.className = 'badge bg-secondary';
+      badge.className = 'badge rounded-pill sp-badge ms-auto';
       badge.setAttribute('data-artist-id', a.id);
       badge.textContent = cacheMap.has(a.id) ? String(cacheMap.get(a.id)) : '0';
 
