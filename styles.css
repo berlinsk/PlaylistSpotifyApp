@@ -1,19 +1,16 @@
 :root{
+  --sp-black: #121212;
+  --sp-elev-1:#212121;
+  --sp-elev-2:#212121;
+  --sp-elev-3:#2a2a2a;
+  --sp-text:#ffffff;
+  --sp-subtext:#b3b3b3;
   --sp-green:#1DB954;
-  --sp-black:#121212;
-  --sp-surface:#212121;
-  --sp-gray:#535353;
-  --sp-muted:#B3B3B3;
+  --sp-green-press:#17a84a;
+  --sp-border:#535353;
 
-  --sp-elev-1: var(--sp-surface);
-  --sp-elev-2: var(--sp-surface);
-  --sp-elev-3: var(--sp-surface);
-  --sp-text:   var(--sp-muted);
-  --sp-subtext:var(--sp-muted);
-  --sp-border: var(--sp-gray);
-
-  --log-bg: var(--sp-black);
-  --log-fg: var(--sp-muted);
+  --log-bg:#121212;
+  --log-fg:#e2e8f0;
 }
 
 *{box-sizing:border-box}
@@ -30,12 +27,13 @@ body{
   background: var(--sp-elev-1);
   border: 1px solid var(--sp-border);
   border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
 }
 
 .app-header{ padding:.25rem }
 .header-actions{ gap:.5rem }
-.spotify-mark{ color: var(--sp-green); display:inline-flex }
-.app-title{ color: var(--sp-text); letter-spacing:.2px }
+.spotify-mark{color: var(--sp-green); display:inline-flex}
+.app-title{color:#fff; letter-spacing:.2px}
 
 .app-lang.form-select{
   background: var(--sp-elev-2);
@@ -43,9 +41,8 @@ body{
   border-color: var(--sp-border);
 }
 .app-lang.form-select:focus{
+  box-shadow: 0 0 0 .2rem rgba(29,185,84,.25);
   border-color: var(--sp-green);
-  outline: 2px solid var(--sp-green);
-  outline-offset: 0;
 }
 
 .app-input.form-control{
@@ -53,22 +50,19 @@ body{
   color: var(--sp-text);
   border-color: var(--sp-border);
 }
-.app-input.form-control::placeholder{ color: var(--sp-muted); }
 .app-input.form-control:focus{
   border-color: var(--sp-green);
-  outline: 2px solid var(--sp-green);
-  outline-offset: 0;
+  box-shadow: 0 0 0 .2rem rgba(29,185,84,.25);
 }
 
 .btn-spotify{
   background: var(--sp-green);
-  color: var(--sp-black);
+  color: #000;
   border: 0;
   font-weight: 700;
   padding:.55rem 1rem;
 }
-.btn-spotify:hover{ background: var(--sp-green); color: var(--sp-black); }
-
+.btn-spotify:hover{background: var(--sp-green-press); color:#000}
 .btn-ghost{
   background: var(--sp-elev-2);
   color: var(--sp-text);
@@ -77,17 +71,8 @@ body{
 }
 .btn-ghost:hover{
   background: var(--sp-elev-3);
-  color: var(--sp-text);
+  color:#fff;
   border-color: var(--sp-green);
-}
-
-.btn-link{
-  color: var(--sp-muted);
-}
-.btn-link:hover,
-.btn-link:focus{
-  color: var(--sp-muted);
-  text-decoration: underline;
 }
 
 .form-switch-spotify .form-check-input{
@@ -97,9 +82,8 @@ body{
   cursor: pointer;
 }
 .form-switch-spotify .form-check-input:focus{
+  box-shadow: 0 0 0 .2rem rgba(29,185,84,.25);
   border-color: var(--sp-green);
-  outline: 2px solid var(--sp-green);
-  outline-offset: 0;
 }
 .form-switch-spotify .form-check-input:checked{
   background-color: var(--sp-green);
@@ -110,7 +94,7 @@ body{
   color: var(--sp-text);
 }
 
-#whoamiAvatar{ }
+#whoamiAvatar{ box-shadow: 0 2px 8px rgba(0,0,0,.5); }
 
 .artist-list {
   display: flex;
@@ -135,9 +119,6 @@ body{
 .artist-item .badge {
   margin-left: auto;
   flex-shrink: 0;
-  background: var(--sp-gray);
-  color: var(--sp-text);
-  border: 1px solid var(--sp-border);
 }
 
 .artist-item input[type="checkbox"],
@@ -163,10 +144,15 @@ body{
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
-  background: var(--sp-gray);
+  background: #333;
+  box-shadow: 0 1px 2px rgba(0,0,0,.4);
 }
+
 @media (min-width:768px) {
-  .artist-avatar { width: 32px; height: 32px; }
+  .artist-avatar {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .artist-name {
@@ -178,7 +164,7 @@ body{
   -webkit-box-orient: vertical;
   line-height: 1.2;
   font-size: .95rem;
-  color: var(--sp-text);
+  color: #fff;
   flex: 1 1 auto;
 }
 
@@ -197,8 +183,14 @@ body{
   transition: opacity .45s ease, transform .45s cubic-bezier(.22,.61,.36,1);}
 .share-container.is-visible{ display:block; opacity:1; transform: translateY(0);}
 .btn-share{ position:relative; overflow:hidden; }
-
-@keyframes shareShine{}
+.btn-share::after{
+  content:""; position:absolute; inset:0 auto 0 -150%; width:50%;
+  background: linear-gradient(120deg, rgba(255,255,255,0) 0%,
+    rgba(255,255,255,.25) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-20deg); pointer-events:none;
+}
+.btn-share.shine::after{ animation: shareShine 900ms ease both; }
+@keyframes shareShine{ from{left:-150%} to{left:150%} }
 
 .modal-spotify{
   background: var(--sp-elev-2);
@@ -208,57 +200,11 @@ body{
 .modal-spotify .modal-header{ border-bottom: 1px solid var(--sp-border); }
 .modal-spotify .modal-footer{ border-top: 1px solid var(--sp-border); }
 
-.modal-content{ background: var(--sp-surface); color: var(--sp-text); }
-.modal-header, .modal-footer{ border-color: var(--sp-border) !important; }
-
-.form-control{
-  background: var(--sp-surface);
-  border-color: var(--sp-border);
-  color: var(--sp-text);
-}
-.form-control::placeholder{ color: var(--sp-muted); }
-.form-control:focus{
-  border-color: var(--sp-green);
-  outline: 2px solid var(--sp-green);
-  outline-offset: 0;
-}
-
 #coverPreview{ transition: opacity .2s ease; opacity:0; }
 #coverPreview.is-visible{ opacity:1; display:block; }
-#coverPreviewWrap{
-  background: var(--sp-elev-3);
-  border-color: var(--sp-border) !important;
-}
+#coverPreviewWrap{ background: var(--sp-elev-3); border-color: var(--sp-border) !important;}
 
 footer, .text-muted{ color: var(--sp-subtext) !important; }
-
-.sp-row{
-  display:flex;
-  align-items:center;
-  gap:.75rem;
-  padding:.5rem .75rem;
-  border-radius:8px;
-  background:var(--sp-surface);
-  color:var(--sp-text);
-}
-.sp-row:hover{ background:var(--sp-surface); }
-
-.sp-avatar{
-  width:28px; height:28px; border-radius:50%;
-  object-fit:cover; background:var(--sp-gray);
-}
-.sp-check{
-  width:.9rem; height:.9rem; accent-color: var(--sp-green); cursor:pointer;
-}
-.sp-ellipsis{
-  overflow:hidden; text-overflow:ellipsis; white-space:normal; line-height:1.2;
-}
-.sp-badge{
-  background:var(--sp-gray) !important;
-  color:var(--sp-text) !important;
-  font-weight:600; padding:.25rem .5rem;
-  border:1px solid var(--sp-border);
-}
 
 @media (max-width:720px) {
   .app-title { font-size: 1.1rem; }
@@ -267,4 +213,89 @@ footer, .text-muted{ color: var(--sp-subtext) !important; }
   .modal-title { font-size: 1rem; }
   .artist-item { padding: .45rem .55rem; gap: .5rem; }
   .form-control { font-size: .95rem; }
+}
+
+:root{
+  --sp-green:#1DB954;
+  --sp-bg:#121212;
+  --sp-surface:#212121;
+  --sp-surface-hover:#2a2a2a;
+  --sp-text:#FFFFFF;
+  --sp-muted:#B3B3B3;
+}
+
+.sp-row{
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  padding:.5rem .75rem;
+  border-radius:8px;
+  background:var(--sp-surface);
+  transition:background-color .15s ease, transform .1s ease;
+  color:var(--sp-text);
+}
+.sp-row:hover{ background:var(--sp-surface-hover); }
+
+.sp-avatar{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#2a2a2a;
+}
+
+.sp-check{
+  width:.9rem;
+  height:.9rem;
+  accent-color: var(--sp-green);
+  cursor:pointer;
+}
+
+.sp-ellipsis{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:normal;
+  line-height:1.2;
+}
+
+.sp-badge{
+  background:#2a2a2a !important;
+  color:#fff !important;
+  font-weight:600;
+  padding:.25rem .5rem;
+  border:1px solid rgba(255,255,255,.06);
+}
+
+.artist-list{
+  background:rgba(33,33,33,.8);
+  border-color:rgba(255,255,255,.08) !important;
+}
+
+.log{
+  background:#121212 !important;
+  color:#e6e6e6 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Liberation Mono", monospace;
+  border:1px solid rgba(255,255,255,.06) !important;
+}
+
+.btn-success{
+  background-color:var(--sp-green) !important;
+  border-color:var(--sp-green) !important;
+  color:#000 !important;
+  font-weight:700;
+}
+.btn-success:hover{ filter:brightness(1.05); }
+
+.btn-outline-secondary{ color:#fff; border-color:#535353; }
+.btn-outline-secondary:hover{ background:#2a2a2a; border-color:#2a2a2a; }
+
+.modal-content{ background:var(--sp-surface); color:var(--sp-text); }
+.modal-header, .modal-footer{ border-color: rgba(255,255,255,.08) !important; }
+.form-control{
+  background:#2a2a2a; border-color:#535353; color:#fff;
+}
+.form-control::placeholder{ color:#8d8d8d; }
+.form-control:focus{
+  background:#2a2a2a; color:#fff; border-color:#535353;
+  box-shadow:0 0 0 .2rem rgba(29,185,84,.2);
 }
