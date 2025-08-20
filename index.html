@@ -9,24 +9,23 @@
 </head>
 <body>
   <div class="container app-shell py-3">
-    <header class="d-flex justify-content-between align-items-center mb-3">
-      <h1 class="h3 m-0" data-i18n="title">Followed Artists Playlist</h1>
-      <select id="lang" class="form-select form-select-sm w-auto app-lang">
-        <option value="en">EN</option>
-        <option value="uk">UA</option>
-        <option value="ru">RU</option>
-        <option value="emoji">Emoji</option>
-      </select>
+    <header class="app-header d-flex justify-content-between align-items-center mb-2">
+      <h1 class="h5 m-0 app-title" data-i18n="title">Followed Artists Playlist</h1>
+      <div class="d-flex align-items-center gap-2 header-actions">
+        <select id="lang" class="form-select form-select-sm w-auto app-lang">
+          <option value="en">EN</option>
+          <option value="uk">UA</option>
+          <option value="ru">RU</option>
+          <option value="emoji">Emoji</option>
+        </select>
+        <button id="login" class="btn btn-spotify btn-sm" data-i18n="login">Log in to Spotify</button>
+        <button id="logout" class="btn btn-ghost btn-sm" style="display:none" data-i18n="logout">Log out</button>
+      </div>
     </header>
 
-    <p class="lead mb-3" data-i18n="intro">
+    <p class="mb-3 text-muted small" data-i18n="intro">
       Collect all tracks from artists you follow and create a playlist in your account
     </p>
-
-    <div class="d-flex gap-2 mb-3">
-      <button id="login" class="btn btn-success" data-i18n="login">Log in to Spotify</button>
-      <button id="logout" class="btn btn-secondary" style="display:none" data-i18n="logout">Log out</button>
-    </div>
 
     <div id="whoami" class="mb-3 d-flex align-items-center gap-2" style="display:none">
       <img id="whoamiAvatar" src="" alt="" class="rounded-circle flex-shrink-0" style="width:40px;height:40px;object-fit:cover;display:none">
@@ -34,45 +33,44 @@
     </div>
 
     <div id="controls" style="display:none">
-      <div class="row g-2 mb-3">
-        <div class="col-12 col-md-4">
-          <div class="form-check form-switch form-switch-spotify">
-            <input type="checkbox" class="form-check-input" id="publicPl">
-            <label for="publicPl" class="form-check-label" data-i18n="public">Make playlist public</label>
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          <div class="form-check form-switch form-switch-spotify">
-            <input type="checkbox" class="form-check-input" id="chronological" checked>
-            <label for="chronological" class="form-check-label" data-i18n="chronological">Add in chronological order</label>
-          </div>
-        </div>
-        <div class="col-12 col-md-4">
-          <div class="form-check form-switch form-switch-spotify">
-            <input type="checkbox" class="form-check-input" id="singlesOnly">
-            <label for="singlesOnly" class="form-check-label" data-i18n="singles">Singles only</label>
-          </div>
-        </div>
+      <div class="mb-2">
+        <button class="btn btn-ghost w-100" type="button" data-bs-toggle="modal" data-bs-target="#coverModal" data-i18n="coverBtn">
+          Playlist cover
+        </button>
       </div>
 
-      <div class="mb-3 d-flex gap-2">
-        <input id="playlistName" type="text" class="form-control app-input" placeholder="followed artists: all tracks" />
-        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#coverModal" data-i18n="coverBtn">Playlist cover</button>
-      </div>
-      <div class="d-flex gap-2 mb-3">
-        <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">Select artists</button>
-        <button id="run" class="btn btn-success flex-fill" data-i18n="build">Build and create playlist</button>
+      <div class="d-flex gap-2 mb-2">
+        <button class="btn btn-ghost flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#artistModal" data-i18n="selectArtists">
+          Select artists
+        </button>
+        <button class="btn btn-ghost flex-fill" type="button" data-bs-toggle="modal" data-bs-target="#settingsModal" data-i18n="settings">
+          Settings
+        </button>
       </div>
 
-      <div id="shareContainer" class="mb-3 share-container">
-        <button id="shareBtn" class="btn btn-outline-secondary w-100 btn-share" data-i18n="sharePlaylist">
+      <div class="d-grid gap-2 col-12 col-sm-6 mx-auto mb-2">
+        <button id="run" class="btn btn-spotify" data-i18n="build">
+          Build and create playlist
+        </button>
+      </div>
+
+      <div id="shareContainer" class="share-container text-center">
+        <button id="shareBtn" class="btn btn-ghost btn-share mx-auto" data-i18n="sharePlaylist">
           Share playlist
         </button>
       </div>
     </div>
 
-    <h3 class="h5 mt-4" data-i18n="logTitle">Log</h3>
-    <pre class="log p-3 rounded" id="log"></pre>
+    <div class="d-flex align-items-center justify-content-between">
+      <h3 class="h6 m-0" data-i18n="logTitle">Log</h3>
+      <button class="btn btn-link text-decoration-none text-muted p-0 small"
+              data-bs-toggle="collapse" data-bs-target="#logWrap"
+              aria-expanded="false" aria-controls="logWrap"
+              data-i18n="toggleLog">Toggle</button>
+    </div>
+    <div id="logWrap" class="collapse">
+      <pre class="log p-3 rounded mt-2" id="log"></pre>
+    </div>
 
     <footer class="mt-3 text-muted small">
       <span data-i18n="scopes">Requires scopes: </span>
@@ -107,11 +105,11 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-info me-auto" id="showCounts"
+          <button type="button" class="btn btn-ghost me-auto" id="showCounts"
                   data-bs-toggle="modal" data-bs-target="#countsModal" data-i18n="showCounts">
             Show track counts
           </button>
-          <button type="button" class="btn btn-secondary" id="artistOk" data-bs-dismiss="modal">OK</button>
+          <button type="button" class="btn btn-ghost" id="artistOk" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
         </div>
       </div>
     </div>
@@ -129,14 +127,50 @@
           <div class="modal-tools sticky-top">
             <div id="countsProgress" class="text-muted small" data-i18n="calculating">Calculating</div>
           </div>
-
           <div class="p-2">
             <div id="countsList" class="artist-list border rounded p-1"></div>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
+          <button type="button" class="btn btn-ghost" data-bs-dismiss="modal" data-i18n="close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" data-i18n="settings">Settings</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label small text-muted" for="playlistName" data-i18n="playlistNameLabel">Playlist name</label>
+            <input id="playlistName" type="text" class="form-control app-input" placeholder="followed artists: all tracks" />
+          </div>
+
+          <div class="vstack gap-3">
+            <div class="form-check form-switch form-switch-spotify">
+              <input type="checkbox" class="form-check-input" id="publicPl">
+              <label for="publicPl" class="form-check-label" data-i18n="public">Make playlist public</label>
+            </div>
+            <div class="form-check form-switch form-switch-spotify">
+              <input type="checkbox" class="form-check-input" id="chronological" checked>
+              <label for="chronological" class="form-check-label" data-i18n="chronological">Add in chronological order</label>
+            </div>
+            <div class="form-check form-switch form-switch-spotify">
+              <input type="checkbox" class="form-check-input" id="singlesOnly">
+              <label for="singlesOnly" class="form-check-label" data-i18n="singles">Singles only</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
         </div>
       </div>
     </div>
@@ -152,7 +186,7 @@
 
         <div class="modal-body">
           <div class="mb-3">
-            <button id="coverChooseBtn" type="button" class="btn btn-outline-secondary w-100" data-i18n="chooseFile">
+            <button id="coverChooseBtn" type="button" class="btn btn-ghost w-100" data-i18n="chooseFile">
               Choose from device
             </button>
             <input id="coverFile" type="file" accept="image/*" class="visually-hidden">
@@ -164,7 +198,7 @@
             <input id="coverUrl" type="url" class="form-control mb-2 app-input"
                    placeholder="https://example.com/image.jpg"
                    data-i18n-placeholder="pasteUrl">
-            <button id="coverLoadUrl" class="btn btn-outline-primary w-100" type="button" data-i18n="preview">
+            <button id="coverLoadUrl" class="btn btn-ghost w-100" type="button" data-i18n="preview">
               Preview
             </button>
           </div>
@@ -178,8 +212,8 @@
         </div>
 
         <div class="modal-footer">
-          <button id="coverRemove" type="button" class="btn btn-outline-danger" data-i18n="removeImage">Remove image</button>
-          <button id="coverApply" type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
+          <button id="coverRemove" type="button" class="btn btn-ghost text-danger" data-i18n="removeImage">Remove image</button>
+          <button id="coverApply" type="button" class="btn btn-spotify" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
         </div>
       </div>
     </div>

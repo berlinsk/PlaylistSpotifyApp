@@ -31,7 +31,10 @@ export const I18N = {
     preview: "Preview",
     apply: "Apply",
     removeImage: "Remove image",
-    coverHint: "JPEG up to 256 KB. We will compress automatically if needed."
+    coverHint: "JPEG up to 256 KB. We will compress automatically if needed.",
+    settings: "Settings",
+    toggleLog: "Toggle",
+    playlistNameLabel: "Playlist name"
   },
   ru: {
     title: "Плейлист из подписанных артистов",
@@ -65,7 +68,10 @@ export const I18N = {
     preview: "Предпросмотр",
     apply: "Применить",
     removeImage: "Убрать обложку",
-    coverHint: "JPEG до 256 КБ. Мы автоматически сожмём при необходимости."
+    coverHint: "JPEG до 256 КБ. Мы автоматически сожмём при необходимости.",
+    settings: "Настройки",
+    toggleLog: "Показать/скрыть",
+    playlistNameLabel: "Название плейлиста"
   },
   uk: {
     title: "Плейлист із підписаних артистів",
@@ -99,7 +105,10 @@ export const I18N = {
     preview: "Попередній перегляд",
     apply: "Застосувати",
     removeImage: "Прибрати обкладинку",
-    coverHint: "JPEG до 256 КБ. Ми автоматично стиснемо за потреби."
+    coverHint: "JPEG до 256 КБ. Ми автоматично стиснемо за потреби.",
+    settings: "Налаштування",
+    toggleLog: "Показати/сховати",
+    playlistNameLabel: "Назва плейлиста"
   },
   emoji: {
     title: "🐈🎧📜",
@@ -133,7 +142,10 @@ export const I18N = {
     preview: "👀",
     apply: "✅",
     removeImage: "🗑️",
-    coverHint: "JPEG ≤256KB"
+    coverHint: "JPEG ≤256KB",
+    settings: "⚙️",
+    toggleLog: "↕️",
+    playlistNameLabel: "📝"
   }
 };
 
