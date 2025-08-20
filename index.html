@@ -8,10 +8,10 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container py-4">
+  <div class="container app-shell py-3">
     <header class="d-flex justify-content-between align-items-center mb-3">
       <h1 class="h3 m-0" data-i18n="title">Followed Artists Playlist</h1>
-      <select id="lang" class="form-select form-select-sm w-auto lang-select">
+      <select id="lang" class="form-select form-select-sm w-auto app-lang">
         <option value="en">EN</option>
         <option value="uk">UA</option>
         <option value="ru">RU</option>
@@ -36,19 +36,19 @@
     <div id="controls" style="display:none">
       <div class="row g-2 mb-3">
         <div class="col-12 col-md-4">
-          <div class="form-check">
+          <div class="form-check form-switch form-switch-spotify">
             <input type="checkbox" class="form-check-input" id="publicPl">
             <label for="publicPl" class="form-check-label" data-i18n="public">Make playlist public</label>
           </div>
         </div>
         <div class="col-12 col-md-4">
-          <div class="form-check">
+          <div class="form-check form-switch form-switch-spotify">
             <input type="checkbox" class="form-check-input" id="chronological" checked>
             <label for="chronological" class="form-check-label" data-i18n="chronological">Add in chronological order</label>
           </div>
         </div>
         <div class="col-12 col-md-4">
-          <div class="form-check">
+          <div class="form-check form-switch form-switch-spotify">
             <input type="checkbox" class="form-check-input" id="singlesOnly">
             <label for="singlesOnly" class="form-check-label" data-i18n="singles">Singles only</label>
           </div>
@@ -56,7 +56,7 @@
       </div>
 
       <div class="mb-3 d-flex gap-2">
-        <input id="playlistName" type="text" class="form-control" placeholder="followed artists: all tracks" />
+        <input id="playlistName" type="text" class="form-control app-input" placeholder="followed artists: all tracks" />
         <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#coverModal" data-i18n="coverBtn">Playlist cover</button>
       </div>
       <div class="d-flex gap-2 mb-3">
@@ -81,28 +81,36 @@
   </div>
 
   <div class="modal fade" id="artistModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen-sm-down">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" data-i18n="selectArtists">Select artists</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <label class="form-check m-0">
-              <input type="checkbox" id="selectAllArtists" class="form-check-input" checked>
-              <span data-i18n="selectAll">Select all artists</span>
-            </label>
-            <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+
+        <div class="modal-body p-0">
+          <div class="modal-tools sticky-top">
+            <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+              <label class="form-check m-0 d-flex align-items-center gap-2">
+                <input type="checkbox" id="selectAllArtists" class="form-check-input">
+                <span data-i18n="selectAll">Select all artists</span>
+              </label>
+              <span id="artistSelectedCount" class="text-muted small" data-i18n="selectedCount" data-i18n-arg-n="0">Selected: 0</span>
+            </div>
+            <input id="artistSearch" type="search" class="form-control form-control-sm app-input"
+                   placeholder="" data-i18n-placeholder="searchArtists">
           </div>
-          <div class="mb-3">
-            <input id="artistSearch" type="search" class="form-control form-control-sm"
-              placeholder="" data-i18n-placeholder="searchArtists">
+
+          <div class="p-2">
+            <div id="artistList" class="artist-list border rounded p-1"></div>
           </div>
-          <div id="artistList" class="artist-list border rounded p-2"></div>
         </div>
+
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-info me-auto" id="showCounts" data-bs-toggle="modal" data-bs-target="#countsModal" data-i18n="showCounts">Show track counts</button>
+          <button type="button" class="btn btn-outline-info me-auto" id="showCounts"
+                  data-bs-toggle="modal" data-bs-target="#countsModal" data-i18n="showCounts">
+            Show track counts
+          </button>
           <button type="button" class="btn btn-secondary" id="artistOk" data-bs-dismiss="modal">OK</button>
         </div>
       </div>
@@ -110,16 +118,23 @@
   </div>
 
   <div class="modal fade" id="countsModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-fullscreen-sm-down">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" data-i18n="countsTitle">Track counts</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-          <div id="countsProgress" class="text-muted small mb-2" data-i18n="calculating">Calculating</div>
-          <div id="countsList" class="artist-list border rounded p-2"></div>
+
+        <div class="modal-body p-0">
+          <div class="modal-tools sticky-top">
+            <div id="countsProgress" class="text-muted small" data-i18n="calculating">Calculating</div>
+          </div>
+
+          <div class="p-2">
+            <div id="countsList" class="artist-list border rounded p-1"></div>
+          </div>
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close">Close</button>
         </div>
@@ -128,12 +143,13 @@
   </div>
 
   <div class="modal fade" id="coverModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" data-i18n="coverTitle">Playlist cover</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
         <div class="modal-body">
           <div class="mb-3">
             <button id="coverChooseBtn" type="button" class="btn btn-outline-secondary w-100" data-i18n="chooseFile">
@@ -145,9 +161,9 @@
           <div class="text-center text-muted small mb-2" data-i18n="or">or</div>
 
           <div class="mb-3">
-            <input id="coverUrl" type="url" class="form-control mb-2"
-              placeholder="https://example.com/image.jpg"
-              data-i18n-placeholder="pasteUrl">
+            <input id="coverUrl" type="url" class="form-control mb-2 app-input"
+                   placeholder="https://example.com/image.jpg"
+                   data-i18n-placeholder="pasteUrl">
             <button id="coverLoadUrl" class="btn btn-outline-primary w-100" type="button" data-i18n="preview">
               Preview
             </button>
@@ -156,8 +172,11 @@
           <div id="coverPreviewWrap" class="ratio ratio-1x1 border rounded overflow-hidden mb-2 bg-light d-none">
             <img id="coverPreview" alt="" style="object-fit:cover;width:100%;height:100%;">
           </div>
-          <div class="text-muted small" data-i18n="coverHint">JPEG up to 256 KB. We will compress automatically if needed.</div>
+          <div class="text-muted small" data-i18n="coverHint">
+            JPEG up to 256 KB. We will compress automatically if needed.
+          </div>
         </div>
+
         <div class="modal-footer">
           <button id="coverRemove" type="button" class="btn btn-outline-danger" data-i18n="removeImage">Remove image</button>
           <button id="coverApply" type="button" class="btn btn-primary" data-bs-dismiss="modal" data-i18n="apply">Apply</button>
